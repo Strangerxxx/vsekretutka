@@ -57,6 +57,9 @@ if(Meteor.isServer){
         },
         'notifications.remove': (_id) => {
             Notifications.remove({_id: _id});
+        },
+        'notifications.remove.all': () => {
+            Notifications.remove({});
         }
     });
 }

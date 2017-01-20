@@ -30,6 +30,6 @@
 .dropdown-menu{
     width: 400px !important;
 }
-a.remove-notification{
-    top: -30px;
+span.remove-notification{
+    cursor: pointer;
 }
