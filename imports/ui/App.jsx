@@ -1,9 +1,9 @@
 import React, { Component, PropTypes} from 'react';
-import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import { LoginDropdown } from './components/Login.jsx';
+import NotificationsDropdown from './components/Notifications';
 
 class App extends Component{
     render(){
@@ -14,6 +14,7 @@ class App extends Component{
                 </div>
 
                 <ul className="nav navbar-nav navbar-right">
+                    <NotificationsDropdown/>
                     <LoginDropdown currentUser={this.props.currentUser}/>
                 </ul>
             </div>
