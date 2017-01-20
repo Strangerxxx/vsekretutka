@@ -20,6 +20,7 @@ class Notification extends Component{
     }
 
     remove(event){
+        event.stopPropagation();
         Meteor.call('notifications.remove', this.props.item._id);
     }
 
@@ -49,20 +50,28 @@ class NotificationsDropdown extends Component{
     }
 
     dropdownClick(event){
-        console.log(event)
-        event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
+    }
+
+    clearNotifications(){
+        Meteor.call('notifications.remove.all');
     }
 
     render() {
+        let newCountElement, clearElement;
+        if(this.props.count > 0){
+            newCountElement = <span className="label label-danger">{this.props.count}</span>;
+            clearElement = <a href="#" className="pull-right" onClick={this.clearNotifications}>Clear</a>;
+        }
         return(
             <li className="dropdown">
                 <a className="dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
                     <i className="fa fa-bell"/>
-                    <span className="label label-danger">count</span>
+                    {newCountElement}
                 </a>
 
                 <ul className="dropdown-menu" onClick={this.dropdownClick}>
-                    <h6 className="dropdown-header"><b>Notifications</b></h6>
+                    <h6 className="dropdown-header"><b>Notifications</b>{clearElement}</h6>
                     <li className="divider"/>
                     {this.getNotifications()}
                 </ul>
@@ -76,6 +85,6 @@ export default createContainer(() => {
     Meteor.subscribe('notifications');
     return {
         notifications: Notifications.find().fetch(),
-        count: Notifications.find().count,
+        count: Notifications.find({seen: false}).count(),
     };
 }, NotificationsDropdown);
