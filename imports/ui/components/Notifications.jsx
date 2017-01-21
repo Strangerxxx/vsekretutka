@@ -63,20 +63,22 @@ class NotificationsDropdown extends Component{
             newCountElement = <span className="label label-danger">{this.props.count}</span>;
             clearElement = <a href="#" className="pull-right" onClick={this.clearNotifications}>Clear</a>;
         }
-        return(
-            <li className="dropdown">
-                <a className="dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
-                    <i className="fa fa-bell"/>
-                    {newCountElement}
-                </a>
+        if(this.props.currentUser)
+            return(
+                <li className="dropdown">
+                    <a className="dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
+                        <i className="fa fa-bell"/>
+                        {newCountElement}
+                    </a>
 
-                <ul className="dropdown-menu" onClick={this.dropdownClick}>
-                    <h6 className="dropdown-header"><b>Notifications</b>{clearElement}</h6>
-                    <li className="divider"/>
-                    {this.getNotifications()}
-                </ul>
-            </li>
-        )
+                    <ul className="dropdown-menu" onClick={this.dropdownClick}>
+                        <h6 className="dropdown-header"><b>Notifications</b>{clearElement}</h6>
+                        <li className="divider"/>
+                        {this.getNotifications()}
+                    </ul>
+                </li>
+            );
+        return null;
     }
 }
 

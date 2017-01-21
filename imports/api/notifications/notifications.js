@@ -44,6 +44,14 @@ NotificationsSchema = new SimpleSchema({
     href: {
         type: String,
         optional: true,
+    },
+    userId: {
+        type: String,
+        optional: true,
+    },
+    role: {
+        type: String,
+        optional: true,
     }
 });
 

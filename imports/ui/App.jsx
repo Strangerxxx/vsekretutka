@@ -11,16 +11,21 @@ class App extends Component{
     }
     render(){
         return(
-            <div className="navbar navbar-default container-fluid" role="navigation">
-                <div className="navbar-header">
-                    <a className="navbar-brand" href="#" onClick={this.logoClick}>Sekretutka</a>
-                </div>
+            <main>
+                <div className="navbar navbar-default container-fluid" role="navigation">
+                    <div className="navbar-header">
+                        <a className="navbar-brand" href="#" onClick={this.logoClick}>Sekretutka</a>
+                    </div>
 
-                <ul className="nav navbar-nav navbar-right">
-                    <NotificationsDropdown/>
-                    <LoginDropdown currentUser={this.props.currentUser}/>
-                </ul>
-            </div>
+                    <ul className="nav navbar-nav navbar-right">
+                        <NotificationsDropdown currentUser={this.props.currentUser}/>
+                        <LoginDropdown currentUser={this.props.currentUser}/>
+                    </ul>
+                </div>
+                <div className="container-fluid">
+                    {this.props.children}
+                </div>
+            </main>
         )
     }
 }
