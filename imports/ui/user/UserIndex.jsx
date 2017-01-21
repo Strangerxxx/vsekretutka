@@ -8,6 +8,7 @@ import { browserHistory } from 'react-router'
 class UserIndex extends Component {
     componentWillMount(){
         Tracker.autorun(() => {
+            console.log(Roles.userIsInRole(Meteor.userId(), 'admin'));
             if(Roles.userIsInRole(Meteor.userId(), 'admin')){
                 browserHistory.push('/admin');
             }
@@ -17,13 +18,8 @@ class UserIndex extends Component {
     render() {
         const {main, navigation} = this.props;
         return (
-            <div className="container-fluid">
-                <div className="col-md-2">
-                    {navigation}
-                </div>
-                <div className="col-md-10">
-                    {main}
-                </div>
+            <div className="content">
+                HELLO WORLD
             </div>
         )
     }

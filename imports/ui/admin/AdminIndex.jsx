@@ -8,31 +8,29 @@ import { browserHistory } from 'react-router'
 class AdminIndex extends Component {
     componentWillMount(){
         Tracker.autorun(() => {
-            if(!Roles.userIsInRole(Meteor.userId(), 'admin')){
+            if(Roles.subscription.ready() && !Roles.userIsInRole(Meteor.userId(), 'admin') ){
                 browserHistory.push('/');
             }
         });
     }
 
     render() {
-        const {main, navigation} = this.props;
-        return (
-            <div className="container-fluid">
-                <div className="col-md-2">
-                    {navigation}
-                </div>
-                <div className="col-md-10">
+        const { main } = this.props;
+        if(Roles.subscription.ready()){
+            return (
+                <div className="content">
                     {main}
                 </div>
-            </div>
-        )
+            );
+        }
+        return null;
     }
 }
 
 export default createContainer(() => {
     let handle = Meteor.subscribe('currentUser');
     return{
-        ready: handle.ready(),
+        ready:Roles.subscription.ready(),
         user: Meteor.user(),
     }
 }, AdminIndex);

@@ -15,8 +15,8 @@ Meteor.startup( () => {
     render(
         <Router history={ browserHistory }>
             <Route component={ App }>
-                <Route path="/admin" component={AdminIndex} >
-                    <Route path='add' components={{main: AddTask, navigation: Navigation}}/>
+                <Route path="/admin" components={{main: AdminIndex, navigation: Navigation}} >
+                    <Route path='add' components={{main: AddTask }}/>
                 </Route>
                 <Route path="/" component={UserIndex}/>
             </Route>

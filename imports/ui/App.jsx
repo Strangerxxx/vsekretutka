@@ -10,6 +10,7 @@ class App extends Component{
         Meteor.call('notifications.create');
     }
     render(){
+        const { main, navigation } = this.props;
         return(
             <main>
                 <div className="navbar navbar-default container-fluid" role="navigation">
@@ -23,7 +24,12 @@ class App extends Component{
                     </ul>
                 </div>
                 <div className="container-fluid">
-                    {this.props.children}
+                    <div className="col-md-2">
+                        {navigation}
+                    </div>
+                    <div className="col-md-10">
+                        {main}
+                    </div>
                 </div>
             </main>
         )
