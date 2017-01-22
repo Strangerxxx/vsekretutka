@@ -35,10 +35,10 @@ if(Meteor.isServer){
             Invites.update({_id: token}, {$set: {status: 'claimed'}});
         }
     });
-    Meteor.publish('invites', function (userId, token) {
-        if(userId == null)
+    Meteor.publish('invites', function (token) {
+        if(this.userId == null)
             return Invites.find(token);
-        else if(Roles.userIsInRole(userId, 'admin'))
+        else if(Roles.userIsInRole(this.userId, 'admin'))
             return Invites.find();
     });
 }

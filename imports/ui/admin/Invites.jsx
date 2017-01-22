@@ -17,7 +17,7 @@ class InviteRow extends Component {
         const removeInvite = () => {Meteor.call('invites.delete', Meteor.userId(), invite._id)};
         return(
             <tr>
-                <td>{invite.createdAt.toLocaleString()}</td>
+                <td className="created-at">{invite.createdAt.toLocaleString()}</td>
                 <CopyToClipboard text={Meteor.absoluteUrl() + 'acceptInvite/' + invite._id}>
                     <td><a href="#">Click to copy</a></td>
                 </CopyToClipboard>
@@ -68,8 +68,8 @@ class InvitesTable extends Component {
 }
 
 export default createContainer(() => {
-    Meteor.subscribe('invites', Meteor.userId());
-    Meteor.subscribe('users', Meteor.userId());
+    Meteor.subscribe('invites');
+    Meteor.subscribe('users');
     return{
         invites: Invites.find().fetch(),
     }

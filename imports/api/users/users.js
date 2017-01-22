@@ -154,14 +154,14 @@ Schema.newUser = new SimpleSchema({
 Meteor.users.attachSchema(Schema.User);
 
 if(Meteor.isServer){
-    Meteor.publish("users", function (userId) {
+    Meteor.publish("users", function () {
         let query;
-        if(Roles.userIsInRole(userId, 'root'))
+        if(Roles.userIsInRole(this.userId, 'root'))
             query = {};
-        else if(Roles.userIsInRole(userId, 'admin'))
+        else if(Roles.userIsInRole(this.userId, 'admin'))
             query = {roles: {$nin: ['admin']}};
         else
-            query = {_id: userId};
+            query = {_id: this.userId};
         return Meteor.users.find(query, {fields: {emails: 1, profile: 1, createdAt: 1, roles: 1}});
     });
 
@@ -197,7 +197,8 @@ if(Meteor.isServer){
             return stampedLoginToken.token;
         },
         'users.delete': function (userId) {
-            Meteor.users.remove({_id: userId});
+            if(Roles.userIsInRole(this.userId, 'admin') && this.userId != userId)
+                Meteor.users.remove({_id: userId});
         }
     });
 }

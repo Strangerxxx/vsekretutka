@@ -33,3 +33,6 @@
 span.remove-notification{
     cursor: pointer;
 }
+td.created-at{
+    width: 180px;
+}
