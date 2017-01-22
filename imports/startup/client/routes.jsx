@@ -9,6 +9,7 @@ import AdminIndex from '/imports/ui/admin/AdminIndex';
 import UserIndex from '/imports/ui/user/UserIndex';
 import AddTask from '/imports/ui/admin/AddTask';
 import Navigation from '/imports/ui/admin/Navigation';
+import Users from '/imports/ui/admin/Users';
 
 
 Meteor.startup( () => {
@@ -17,8 +18,11 @@ Meteor.startup( () => {
             <Route component={ App }>
                 <Route path="/admin" components={{main: AdminIndex, navigation: Navigation}} >
                     <Route path='add' components={{main: AddTask }}/>
+                    <Route path='users' components={{main: Users}}/>
                 </Route>
-                <Route path="/" component={UserIndex}/>
+                <Route path="/" components={{main: UserIndex}}>
+
+                </Route>
             </Route>
         </Router>,
         document.getElementById( 'react-root' )
