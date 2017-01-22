@@ -3,13 +3,14 @@ import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data'
 import { Roles } from 'meteor/alanning:roles';
 import { Tracker } from 'meteor/tracker';
-import { browserHistory } from 'react-router'
 
-export default class UserIndex extends Component {
+class UserIndex extends Component {
     componentWillMount(){
         Tracker.autorun(() => {
-            if(Roles.userIsInRole(Meteor.userId(), 'admin') && Roles.subscription.ready()){
-                browserHistory.push('/admin');
+            console.log('user tracker');
+            if(Roles.subscription.ready() && Roles.userIsInRole(Meteor.userId(), 'admin')){
+                console.log("user if")
+                this.props.router.push('/admin');
             }
         });
     }
@@ -24,3 +25,9 @@ export default class UserIndex extends Component {
     }
 }
 
+export default createContainer(() => {
+    return{
+        ready: Roles.subscription.ready(),
+        user: Meteor.userId(),
+    }
+}, UserIndex);

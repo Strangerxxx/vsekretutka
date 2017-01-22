@@ -28,7 +28,7 @@ class Users extends Component {
         let userRows = [];
         if(this.props.subscriptionReady)
             for(const user of users){
-                    userRows.push(<UserTableRow user={user} key={user._id}/>)
+                userRows.push(<UserTableRow user={user} key={user._id}/>)
             }
         return userRows;
     }
