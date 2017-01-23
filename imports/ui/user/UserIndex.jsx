@@ -7,12 +7,14 @@ import { Tracker } from 'meteor/tracker';
 class UserIndex extends Component {
     componentWillMount(){
         Tracker.autorun(() => {
-            console.log('user tracker');
+            console.log(Meteor.userId())
             if(Roles.subscription.ready() && Roles.userIsInRole(Meteor.userId(), 'admin')){
-                console.log("user if")
                 this.props.router.push('/admin');
             }
         });
+    }
+    componentWillUnmount(){
+        Tracker.flush();
     }
 
     render() {

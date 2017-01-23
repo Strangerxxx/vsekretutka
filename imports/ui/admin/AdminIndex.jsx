@@ -8,11 +8,15 @@ class AdminIndex extends Component {
     componentWillMount(){
         Tracker.autorun(() => {
             console.log('admin tracker')
-            if(!Meteor.userId() && Roles.subscription.ready() && !Roles.userIsInRole(Meteor.userId(), 'admin') ){
+            if(Roles.subscription.ready() && !Roles.userIsInRole(Meteor.userId(), 'admin') ){
                 console.log('admin if')
                 this.props.router.push('/');
             }
         });
+    }
+
+    componentWillUnmount(){
+        Tracker.flush();
     }
     render() {
         const { main } = this.props;
