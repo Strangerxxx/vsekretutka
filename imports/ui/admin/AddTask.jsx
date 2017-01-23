@@ -28,12 +28,7 @@ export default class AddTask extends Component{
             <div className="container-fluid">
                 <legend>Add Task</legend>
                 <div className="row">
-                    <div className="col-md-4">
-                        <TaskForm/>
-                    </div>
-                    <div className="col-md-8">
-
-                    </div>
+                    <TaskForm/>
                 </div>
             </div>
         )

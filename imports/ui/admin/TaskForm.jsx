@@ -1,6 +1,6 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
-import {StringInput} from '/imports/ui/components/formInputFields';
+import {StringInput, TextAreaInput, SelectSubTasks} from '/imports/ui/components/formInputFields';
 
 export class SimpleTaskForm extends Component{
     render(){
@@ -8,16 +8,40 @@ export class SimpleTaskForm extends Component{
         return(
             <div className="simpleTask">
                 <StringInput id={Random.id()} schema={schema.name}/>
-                <StringInput id={Random.id()} schema={schema.description}/>
+                <TextAreaInput id={Random.id()} schema={schema.description}/>
             </div>
         )
     }
 }
 
 export class TaskForm extends Component{
+    constructor(props){
+        super(props);
+        this.state = { doc: {}};
+
+    }
     render(){
         return(
-            <SimpleTaskForm/>
+            <div className="panel panel-default">
+                <div className="panel-body">
+                    <div className="col-md-5">
+                        <SimpleTaskForm/>
+                    </div>
+                    <div className="col-md-7">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">
+                                <h5>Sub-tasks</h5>
+                            </div>
+                            <div className="panel-body">
+                                <div className="createTaskDiv">
+                                    <button className="btn btn-primary table-cell"><i className="fa fa-plus"/></button>
+                                    <SelectSubTasks tasks={Tasks.find().fetch()}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         )
     }
 }

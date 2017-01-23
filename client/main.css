@@ -36,3 +36,17 @@ span.remove-notification{
 td.created-at{
     width: 180px;
 }
+
+.createTaskDiv{
+    display: table;
+    width: 100%;
+}
+
+.table-cell{
+    display: table-cell;
+}
+
+.table-cell-select{
+    display: table-cell;
+    vertical-align: top;
+}

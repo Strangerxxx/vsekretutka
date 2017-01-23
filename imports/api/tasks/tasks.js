@@ -19,9 +19,12 @@ Tasks.schema = new SimpleSchema({
         type: String,
         label: 'Name',
     },
-    desctiption: {
+    description: {
         type: String,
         label: 'Description',
+        autoform: {
+            height: 10,
+        }
     },
     type: {
         type: String,
