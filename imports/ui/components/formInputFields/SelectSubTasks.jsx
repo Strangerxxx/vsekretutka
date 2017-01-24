@@ -17,7 +17,7 @@ export default class SelectSubTasks extends Component{
 
     render() {
         return(
-            <select className="table-cell-select form-control" defaultValue={0} name="subTaskSelect">
+            <select className="table-cell-select form-control" defaultValue={this.props.value} name="subTaskSelect" onChange={this.props.selectCallback}>
                 {this.createOptions()}
             </select>
         )

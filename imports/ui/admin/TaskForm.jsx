@@ -1,6 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
 import {StringInput, TextAreaInput, SelectSubTasks} from '/imports/ui/components/formInputFields';
+import { createContainer } from 'meteor/react-meteor-data';
 
 export class SimpleTaskForm extends Component{
     render(){
@@ -15,10 +16,6 @@ export class SimpleTaskForm extends Component{
 }
 
 class SimpleTaskFormWrap extends Component{
-    constructor(){
-        super();
-    }
-
     render(){
         return(
             <li className="list-group-item">
@@ -33,7 +30,22 @@ class SimpleTaskFormWrap extends Component{
     }
 }
 
-export class TaskForm extends Component{
+class TaskSelectedFormWrap extends Component{
+    render() {
+        return(
+            <li className="list-group-item">
+                <div>
+                    <button type="button" className="btn btn-primary table-cell-plus" onClick={this.newSubTaskButtonHandler}><i className="fa fa-plus"/></button>
+                    <div className="table-cell-select">
+                        <SelectSubTasks tasks={this.props.tasks} value={this.props.value}/>
+                    </div>
+                </div>
+            </li>
+        )
+    }
+}
+
+class TaskForm extends Component{
     constructor(props){
         super(props);
         this.state = { mainTask: {}, subTasks: []};
@@ -48,12 +60,18 @@ export class TaskForm extends Component{
     }
 
     deleteSubTaskButtonHandler(index) {
-        this.setState(() => this.state.subTasks.splice(index))
+        this.setState(this.state.subTasks.splice(index, 1))
+        console.log(this.state)
     }
 
-
     newSubTaskButtonHandler(){
-        this.setState(() => this.state.subTasks.push(<SimpleTaskFormWrap key={this.state.subTasks.length} keyProp={this.state.subTasks.length} buttonCallback={this.deleteSubTaskButtonHandler}/>));
+        let id= Random.id();
+        this.setState(() => this.state.subTasks.push(<SimpleTaskFormWrap key={id} keyProp={id} buttonCallback={this.deleteSubTaskButtonHandler}/>));
+        console.log(this.state)
+    }
+
+    changeSelectHandler(event){
+        console.log(event.target.value)
     }
 
     render(){
@@ -74,7 +92,7 @@ export class TaskForm extends Component{
                                     <div>
                                         <button type="button" className="btn btn-primary table-cell-plus" onClick={this.newSubTaskButtonHandler}><i className="fa fa-plus"/></button>
                                         <div className="table-cell-select">
-                                            <SelectSubTasks tasks={Tasks.find().fetch()}/>
+                                            <SelectSubTasks tasks={this.props.tasks} value={0} selectCallback={this.changeSelectHandler}/>
                                         </div>
                                     </div>
                                 </li>
@@ -89,3 +107,10 @@ export class TaskForm extends Component{
         )
     }
 }
+
+export default createContainer(() => {
+    Meteor.subscribe('tasks');
+    return {
+        tasks: Tasks.find().fetch(),
+    }
+}, TaskForm);
