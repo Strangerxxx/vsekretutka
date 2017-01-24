@@ -37,16 +37,19 @@ td.created-at{
     width: 180px;
 }
 
-.createTaskDiv{
+.list-group-item>div{
     display: table;
     width: 100%;
+    padding-left: 15px;
 }
 
-.table-cell{
+.table-cell-plus{
     display: table-cell;
+    margin-right: 15px;
 }
 
 .table-cell-select{
+
     display: table-cell;
-    vertical-align: top;
+    width: 100%;
 }

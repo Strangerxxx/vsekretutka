@@ -17,29 +17,34 @@ export class SimpleTaskForm extends Component{
 export class TaskForm extends Component{
     constructor(props){
         super(props);
-        this.state = { doc: {}};
-
+        this.state = { mainTask: {}, subTasks: []};
     }
+
     render(){
         return(
-            <div className="panel panel-default">
-                <div className="panel-body">
-                    <div className="col-md-5">
-                        <SimpleTaskForm/>
-                    </div>
-                    <div className="col-md-7">
-                        <div className="panel panel-default">
-                            <div className="panel-heading">
-                                <h5>Sub-tasks</h5>
-                            </div>
-                            <div className="panel-body">
-                                <div className="createTaskDiv">
-                                    <button className="btn btn-primary table-cell"><i className="fa fa-plus"/></button>
-                                    <SelectSubTasks tasks={Tasks.find().fetch()}/>
-                                </div>
-                            </div>
+            <div className="task-form-body">
+                <div className="col-md-5">
+                    <SimpleTaskForm/>
+                </div>
+                <div className="col-md-7">
+                    <div className="panel panel-default">
+                        <div className="panel-heading">
+                            <h5>Sub-tasks</h5>
                         </div>
+                        <ul className="list-group">
+                            <li className="list-group-item">
+                                <div>
+                                    <button className="btn btn-primary table-cell-plus"><i className="fa fa-plus"/></button>
+                                    <div className="table-cell-select">
+                                        <SelectSubTasks tasks={Tasks.find().fetch()}/>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
+                </div>
+                <div className="col-md-12">
+                    <button className="btn btn-primary">Submit</button>
                 </div>
             </div>
         )
