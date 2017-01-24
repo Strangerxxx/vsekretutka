@@ -24,7 +24,7 @@ export default class TextAreaInput extends Component {
         return(
             <div className="form-group">
                 <label className="control-label" htmlFor={this.props.id}>{this.props.schema.label}</label>
-                <textarea className="form-control" id={this.props.id} rows={this.props.schema.autoform.height} type="text" value={this.props.value} onChange={this.changeValue}/>
+                <textarea className="form-control" name={this.props.name} id={this.props.id} rows={this.props.schema.autoform.height} type="text" value={this.props.value} onChange={this.changeValue}/>
             </div>
         )
     }

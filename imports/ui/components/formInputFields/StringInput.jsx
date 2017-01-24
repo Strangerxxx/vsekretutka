@@ -24,7 +24,7 @@ export default class StringInput extends Component {
         return(
             <div className="form-group">
                 <label className="control-label" htmlFor={this.props.id}>{this.props.schema.label}</label>
-                <input className="form-control" id={this.props.id} type="text" value={this.props.value} onChange={this.changeValue}/>
+                <input className="form-control" name={this.props.name} id={this.props.id} type="text" value={this.props.value} onChange={this.changeValue}/>
             </div>
         )
     }
