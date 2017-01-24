@@ -33,7 +33,7 @@ class AdminIndex extends Component {
 
 export default createContainer(() => {
     return{
-        ready:Roles.subscription.ready(),
+        ready: Roles.subscription.ready(),
         user: Meteor.userId(),
     }
 }, AdminIndex);

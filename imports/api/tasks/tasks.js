@@ -4,10 +4,10 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 export default Tasks = new Meteor.Collection('tasks');
 
 if(Meteor.isServer){
-    Meteor.publish('tasks', () => {
-        if(this.userId == null)
+    Meteor.publish('tasks', (userId) => {
+        if(userId == null)
             return null;
-        else if(Roles.userIsInRole(this.userId, 'admin'))
+        else if(Roles.userIsInRole(userId, 'admin'))
             return Tasks.find();
         else
             return null; //create logic for users
@@ -28,10 +28,7 @@ Tasks.schema = new SimpleSchema({
     },
     type: {
         type: String,
-        allowedValues: ['main', 'sub'],
-        autoform: {
-            hidden: true,
-        }
+        allowedValues: ['main', 'simple'],
     },
     subTasks: {
         type: [Tasks],

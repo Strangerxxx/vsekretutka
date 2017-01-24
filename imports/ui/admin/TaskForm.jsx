@@ -1,7 +1,6 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
 import {StringInput, TextAreaInput, SelectSubTasks} from '/imports/ui/components/formInputFields';
-import { createContainer } from 'meteor/react-meteor-data';
 
 export class SimpleTaskForm extends Component{
     render(){
@@ -45,7 +44,7 @@ class TaskSelectedFormWrap extends Component{
     }
 }
 
-class TaskForm extends Component{
+export default class TaskForm extends Component{
     constructor(props){
         super(props);
         this.state = { mainTask: {}, subTasks: []};
@@ -59,9 +58,15 @@ class TaskForm extends Component{
         console.log($(event.target).serialize())
     }
 
-    deleteSubTaskButtonHandler(index) {
-        this.setState(this.state.subTasks.splice(index, 1))
-        console.log(this.state)
+    deleteSubTaskButtonHandler(id) {
+        let toDelete;
+
+        this.state.subTasks.map((item, index) => {
+            if(item.key == id)
+                toDelete = index;
+        });
+        this.state.subTasks.splice(toDelete, 1);
+        this.forceUpdate();
     }
 
     newSubTaskButtonHandler(){
@@ -107,10 +112,3 @@ class TaskForm extends Component{
         )
     }
 }
-
-export default createContainer(() => {
-    Meteor.subscribe('tasks');
-    return {
-        tasks: Tasks.find().fetch(),
-    }
-}, TaskForm);

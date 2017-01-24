@@ -1,7 +1,6 @@
 import React, { Component, PropTypes} from 'react';
 
 export default class SelectSubTasks extends Component{
-
     createOptions() {
         let options = [];
         if(this.props.tasks.length == 0)
@@ -9,7 +8,7 @@ export default class SelectSubTasks extends Component{
         else {
             options.push(<option key="empty" value={0}>Select a task to join</option>);
             for(let option of this.props.tasks){
-                options.push(<option key={option._id} value={option._id}>option.name</option>)
+                options.push(<option key={option._id} value={option._id}>{option.name}</option>)
             }
         }
         return options;

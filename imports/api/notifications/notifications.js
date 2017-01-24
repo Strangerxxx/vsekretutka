@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 export const Notifications = new Meteor.Collection('notifications');
 
 if(Meteor.isServer){
-    Meteor.publish('notifications', () => {
+    Meteor.publish('notifications', (userId) => {
         return Notifications.find();
     })
 }
