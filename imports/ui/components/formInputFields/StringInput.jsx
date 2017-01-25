@@ -12,19 +12,22 @@ export default class StringInput extends Component {
         };
     }
 
-    returnValue(){
-        return this.state.value;
-    }
-
     changeValue(event){
         this.state.value = event.target.value;
+        console.log(this.props.index);
     }
 
     render() {
+        let props = this.props;
+        let name;
+        if(props.index != undefined)
+            name = props.prefix + '.' + props.index + '.' + props.name;
+        else
+            name = props.name;
         return(
             <div className="form-group">
-                <label className="control-label" htmlFor={this.props.id}>{this.props.schema.label}</label>
-                <input className="form-control" name={this.props.name} id={this.props.id} type="text" value={this.props.value} onChange={this.changeValue}/>
+                <label className="control-label" htmlFor={props.id}> { props.schema[props.name].label } </label>
+                <input className="form-control" name={name} id={props.id} type="text" value={props.value} onChange={this.changeValue}/>
             </div>
         )
     }

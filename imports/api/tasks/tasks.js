@@ -12,6 +12,24 @@ if(Meteor.isServer){
         else
             return null; //create logic for users
     });
+
+    Meteor.methods({
+       'tasks.insert.main': (doc) => {
+            let subTasks = [];
+            for(let task of doc.subTasks){
+                if(task.select)
+                    subTasks.push(task.select)
+                else
+                    subTasks.push(Tasks.insert(task))
+            }
+
+            Tasks.insert({
+                name: doc.name,
+                description: doc.description,
+                subTasks: subTasks,
+            })
+        },
+    });
 }
 
 Tasks.schema = new SimpleSchema({
