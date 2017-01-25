@@ -9,12 +9,12 @@ export default class StringInput extends Component {
     componentWillMount(){
         this.state = {
             value: null,
+            class: 'form-group'
         };
     }
 
     changeValue(event){
-        this.state.value = event.target.value;
-        console.log(this.props.index);
+        $('div#' + this.props.id).removeClass('has-error');
     }
 
     render() {
@@ -25,7 +25,7 @@ export default class StringInput extends Component {
         else
             name = props.name;
         return(
-            <div className="form-group">
+            <div className={this.state.class} id={props.id}>
                 <label className="control-label" htmlFor={props.id}> { props.schema[props.name].label } </label>
                 <input className="form-control" name={name} id={props.id} type="text" value={props.value} onChange={this.changeValue}/>
             </div>

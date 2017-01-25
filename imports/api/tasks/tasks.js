@@ -18,7 +18,7 @@ if(Meteor.isServer){
             let subTasks = [];
             for(let task of doc.subTasks){
                 if(task.select)
-                    subTasks.push(task.select)
+                    subTasks.push(task.select);
                 else
                     subTasks.push(Tasks.insert(task))
             }
@@ -48,6 +48,10 @@ Tasks.schema = new SimpleSchema({
         type: String,
         allowedValues: ['main', 'simple'],
     },
+    action: {
+        type: Object,
+        optional: true,
+    },
     subTasks: {
         type: [Tasks],
         optional: true,
@@ -61,4 +65,4 @@ Tasks.schema = new SimpleSchema({
     }
 });
 
-//Tasks.attachSchema(TasksSchema);
+Tasks.attachSchema(Tasks.schema);

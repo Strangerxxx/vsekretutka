@@ -1,9 +1,9 @@
 import StringInput from './StringInput';
 import TextAreaInput from './TextAreaInput';
-import SelectSubTasks from './SelectSubTasks';
+import SelectFromArray from './SelectFromArray';
 
 export{
     StringInput,
     TextAreaInput,
-    SelectSubTasks,
+    SelectFromArray,
 }

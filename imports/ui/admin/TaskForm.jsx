@@ -1,15 +1,15 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
-import {StringInput, TextAreaInput, SelectSubTasks} from '/imports/ui/components/formInputFields';
+import {StringInput, TextAreaInput, SelectFromArray} from '/imports/ui/components/formInputFields';
 import { Meteor } from 'meteor/meteor';
 
 export class MainTaskForm extends Component{
     render(){
-        let schema = Tasks.schema._schema;
+        let schema = Tasks.schema._schema
         return(
             <div className="simpleTask">
-                <StringInput schema={schema} name="name"/>
-                <TextAreaInput schema={schema} name="description"/>
+                <StringInput schema={schema} id={Random.id()} name="name" />
+                <TextAreaInput schema={schema} id={Random.id()} name="description"/>
             </div>
         )
     }
@@ -20,8 +20,8 @@ export class SimpleTaskForm extends Component{
         let schema = Tasks.schema._schema;
         return(
             <div className="simpleTask">
-                <StringInput schema={schema} prefix={this.props.prefix} index={this.props.index} name="name"/>
-                <TextAreaInput schema={schema} prefix={this.props.prefix} index={this.props.index} name="description"/>
+                <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
+                <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )
     }
@@ -34,7 +34,7 @@ class StepFormWrap extends Component{
                 <div>
                     <button type="button" className="btn btn-primary table-cell-plus" onClick={() => {this.props.buttonCallback(this.props.keyProp)}}><i className="fa fa-minus"/></button>
                     <div className="table-cell-select">
-                        <this.props.component tasks={this.props.tasks} prefix='subTasks' value={this.props.value} name='select' callback={this.props.callback} index={this.props.index}/>
+                        <this.props.component tasks={this.props.tasks} prefix='subTasks' value={this.props.value} id={this.props.keyProp} name='select' callback={this.props.callback} index={this.props.index}/>
                     </div>
                 </div>
             </li>
@@ -50,6 +50,7 @@ export default class TaskForm extends Component{
         this.newSubTaskButtonHandler = this.newSubTaskButtonHandler.bind(this);
         this.deleteSubTaskButtonHandler = this.deleteSubTaskButtonHandler.bind(this);
         this.changeSelectHandler = this.changeSelectHandler.bind(this);
+        this.submitHandler = this.submitHandler.bind(this);
     }
 
     submitHandler(event){
@@ -68,7 +69,7 @@ export default class TaskForm extends Component{
                 break;
 
             if(value == '' || value == 0 ){
-                throw new Meteor.Error(input, 'empty');
+                $('[name =' + '"' + input.name + '"' +']').parent().addClass('has-error');
             }
 
             if(split[0] == 'subTasks'){
@@ -77,9 +78,16 @@ export default class TaskForm extends Component{
                 document.subTasks[split[1]][split[2]] = value;
             }else
                 document[input.name] = value;
+
+
         }
 
         Meteor.call('tasks.insert.main', document);
+    }
+
+    emptyForm(){
+        this.state.subTasks = [];
+        this.forceUpdate();
     }
 
     deleteSubTaskButtonHandler(id) {
@@ -111,7 +119,7 @@ export default class TaskForm extends Component{
         this.setState(() => this.state.subTasks.push({
             key:id,
             keyProp:id,
-            component: SelectSubTasks,
+            component: SelectFromArray,
             value:value,
             tasks: tasks,
             buttonCallback: this.deleteSubTaskButtonHandler
@@ -147,7 +155,7 @@ export default class TaskForm extends Component{
                                     <div>
                                         <button type="button" className="btn btn-primary table-cell-plus" onClick={this.newSubTaskButtonHandler}><i className="fa fa-plus"/></button>
                                         <div className="table-cell-select">
-                                            <SelectSubTasks tasks={this.props.tasks} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
+                                            <SelectFromArray tasks={this.props.tasks} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
                                         </div>
                                     </div>
                                 </li>
