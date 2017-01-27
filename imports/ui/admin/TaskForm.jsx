@@ -1,7 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
 import {StringInput, TextAreaInput, SelectFromArray} from '/imports/ui/components/formInputFields';
-import ''
+import CompletionTypes from '/imports/ui/components/completionTypes/';
 import { Meteor } from 'meteor/meteor';
 
 export class MainTaskForm extends Component{
@@ -22,7 +22,7 @@ export class SimpleTaskForm extends Component{
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
-                <SelectFromArray tasks=""/>
+                <SelectFromArray tasks={schema.type.allowedValues}/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )

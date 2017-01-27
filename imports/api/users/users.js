@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import SimpleSchema from 'simpl-schema';
 
 Schema = {};
 
@@ -46,20 +46,14 @@ Schema.User = new SimpleSchema({
         // For accounts-password, either emails or username is required, but not both. It is OK to make this
         // optional here because the accounts-password package does its own validation.
         // Third-party login packages may not require either. Adjust this schema as necessary for your usage.
-        optional: true,
-        autoform: {
-            type: 'hidden'
-        }
+        optional: true
     },
     emails: {
         type: Array,
         // For accounts-password, either emails or username is required, but not both. It is OK to make this
         // optional here because the accounts-password package does its own validation.
         // Third-party login packages may not require either. Adjust this schema as necessary for your usage.
-        optional: true,
-        autoform: {
-            type: 'hidden'
-        }
+        optional: true
     },
     "emails.$": {
         type: Object
@@ -75,9 +69,6 @@ Schema.User = new SimpleSchema({
     registered_emails: {
         type: Array,
         optional: true,
-        autoform: {
-            type: 'hidden'
-        }
     },
     'registered_emails.$': {
         type: Object,
@@ -85,9 +76,6 @@ Schema.User = new SimpleSchema({
     },
     createdAt: {
         type: Date,
-        autoform: {
-            type: 'hidden'
-        }
     },
     profile: {
         type: Schema.UserProfile,
@@ -97,10 +85,7 @@ Schema.User = new SimpleSchema({
     services: {
         type: Object,
         optional: true,
-        blackbox: true,
-        autoform: {
-            type: 'hidden'
-        }
+        blackbox: true
     },
     // Add `roles` to your schema if you use the meteor-roles package.
     // Option 1: Object type
@@ -121,9 +106,6 @@ Schema.User = new SimpleSchema({
     roles: {
         type: Array,
         optional: true,
-        autoform: {
-            type: 'hidden'
-        }
     },
     'roles.$': {
         type: String
@@ -131,10 +113,7 @@ Schema.User = new SimpleSchema({
     // In order to avoid an 'Exception in setInterval callback' from Meteor
     heartbeat: {
         type: Date,
-        optional: true,
-        autoform: {
-            type: 'hidden'
-        }
+        optional: true
     }
 });
 

@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import SimpleSchema from 'simpl-schema';
 
 export default Tasks = new Meteor.Collection('tasks');
 
@@ -40,10 +40,7 @@ Tasks.schema = new SimpleSchema({
     },
     description: {
         type: String,
-        label: 'Description',
-        autoform: {
-            height: 10,
-        }
+        label: 'Description'
     },
     type: {
         type: String,
@@ -54,10 +51,7 @@ Tasks.schema = new SimpleSchema({
         type: Object,
         optional: true,
     },
-    subTasks: {
-        type: [Tasks],
-        optional: true,
-    },
+    subTasks: [Tasks],
     createdAt: {
         type: Date,
         autoValue(){

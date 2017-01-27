@@ -1,3 +1,5 @@
-import Button from './Button';
+import CompletionTypeButton from './Button';
 
-export new Array([Button]);
+export default CompletionTypes = [
+    CompletionTypeButton
+];
