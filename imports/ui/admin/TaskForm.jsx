@@ -18,11 +18,10 @@ export class MainTaskForm extends Component{
 export class SimpleTaskForm extends Component{
     render(){
         let schema = Tasks.schema._schema;
-        let values = schema.type.type.definitions[0].allowedValues();
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
-                <SelectFromArray tasks={values}/>
+                <SelectFromArray tasks={schema.type.type.definitions[0].allowedValues}/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )
