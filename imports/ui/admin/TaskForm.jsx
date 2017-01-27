@@ -5,7 +5,7 @@ import { Meteor } from 'meteor/meteor';
 
 export class MainTaskForm extends Component{
     render(){
-        let schema = Tasks.schema._schema
+        let schema = Tasks.schema._schema;
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} id={Random.id()} name="name" />
@@ -18,10 +18,11 @@ export class MainTaskForm extends Component{
 export class SimpleTaskForm extends Component{
     render(){
         let schema = Tasks.schema._schema;
+        let values = schema.type.type.definitions[0].allowedValues();
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
-                <SelectFromArray tasks={schema.type.type.definitions[0].allowedValues()}/>
+                <SelectFromArray tasks={values}/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )
