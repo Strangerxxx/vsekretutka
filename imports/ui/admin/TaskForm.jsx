@@ -1,6 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
 import {StringInput, TextAreaInput, SelectFromArray} from '/imports/ui/components/formInputFields';
+import ''
 import { Meteor } from 'meteor/meteor';
 
 export class MainTaskForm extends Component{
@@ -21,6 +22,7 @@ export class SimpleTaskForm extends Component{
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
+                <SelectFromArray tasks=""/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )
@@ -57,6 +59,7 @@ export default class TaskForm extends Component{
         event.preventDefault();
         let form = $(event.target).serializeArray();
         let document = {
+            type: 'main',
             subTasks: []
         };
 
@@ -74,14 +77,16 @@ export default class TaskForm extends Component{
 
             if(split[0] == 'subTasks'){
                 if(document.subTasks[split[1]] == undefined)
-                    document.subTasks.push({});
+                    document.subTasks.push({
+                        type: 'simple',
+                    });
                 document.subTasks[split[1]][split[2]] = value;
             }else
                 document[input.name] = value;
 
 
         }
-
+        console.log($('form').serialize());
         Meteor.call('tasks.insert.main', document);
     }
 
@@ -108,13 +113,13 @@ export default class TaskForm extends Component{
             key:id,
             keyProp:id,
             component: SimpleTaskForm,
-            tasks: this.props.tasks,
+            tasks: this.filterTasks(),
             buttonCallback: this.deleteSubTaskButtonHandler
         }));
     }
 
     changeSelectHandler(value){
-        let tasks = this.props.tasks;
+        let tasks = this.filterTasks();
         let id= Random.id();
         this.setState(() => this.state.subTasks.push({
             key:id,
@@ -124,6 +129,10 @@ export default class TaskForm extends Component{
             tasks: tasks,
             buttonCallback: this.deleteSubTaskButtonHandler
         }));
+    }
+
+    filterTasks() {
+        return this.props.tasks.filter((task) => (task.type == 'main'));
     }
 
     render(){
@@ -155,7 +164,7 @@ export default class TaskForm extends Component{
                                     <div>
                                         <button type="button" className="btn btn-primary table-cell-plus" onClick={this.newSubTaskButtonHandler}><i className="fa fa-plus"/></button>
                                         <div className="table-cell-select">
-                                            <SelectFromArray tasks={this.props.tasks} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
+                                            <SelectFromArray tasks={this.filterTasks()} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
                                         </div>
                                     </div>
                                 </li>

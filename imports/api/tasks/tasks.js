@@ -26,6 +26,7 @@ if(Meteor.isServer){
             Tasks.insert({
                 name: doc.name,
                 description: doc.description,
+                type: doc.type,
                 subTasks: subTasks,
             })
         },
@@ -47,6 +48,7 @@ Tasks.schema = new SimpleSchema({
     type: {
         type: String,
         allowedValues: ['main', 'simple'],
+        optional: true,
     },
     action: {
         type: Object,
