@@ -22,7 +22,7 @@ export class SimpleTaskForm extends Component{
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
-                <SelectFromArray tasks={schema.type.allowedValues}/>
+                <SelectFromArray tasks={schema.type.type.definitions[0].allowedValues}/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )
