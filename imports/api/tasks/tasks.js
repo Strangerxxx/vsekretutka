@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
+import CompletionTypes from '/imports/ui/components/completionTypes/';
 
 export default Tasks = new Meteor.Collection('tasks');
 
@@ -44,7 +45,7 @@ Tasks.schema = new SimpleSchema({
     },
     type: {
         type: String,
-        allowedValues: ['main', 'simple'],
+        allowedValues: ()=>CompletionTypes.map((type)=>type.name),
         optional: true,
     },
     action: {
