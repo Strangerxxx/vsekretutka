@@ -1,9 +1,12 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-export default class CompletionTypeButton extends Component{
-    render() {
-        return(
-            <button>Press ME</button>
-        )
+export default CompletionTypeButton = {
+    label: 'Button',
+    component: class Button extends Component{
+        render() {
+            return(
+                <button>Press ME</button>
+            )
+        }
     }
 }

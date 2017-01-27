@@ -45,7 +45,7 @@ Tasks.schema = new SimpleSchema({
     },
     type: {
         type: String,
-        allowedValues: CompletionTypes.map((type)=>type.name),
+        allowedValues: CompletionTypes.map((type)=>type.label),
         optional: true,
     },
     action: {
