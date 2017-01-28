@@ -22,7 +22,7 @@ export class SimpleTaskForm extends Component{
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
-                <SelectFromArray array={CompletionTypes.map((item) => item.label)} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="type"/>
+                <SelectFromArray array={CompletionTypes.map((item) => item.label)} label="Action" prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="type"/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )

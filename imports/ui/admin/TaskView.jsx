@@ -55,7 +55,7 @@ class TaskView extends Component{
                         </div>
                         <div className="sub-tasks">
                             <h3>Sub Tasks</h3>
-                            <ol className="panel-group">
+                            <ol >
                             {this.renderSimpleTasks()}
                             </ol>
                         </div>
@@ -99,10 +99,15 @@ export default createContainer(({params}) => {
     let usersHandle = Meteor.subscribe('users', Meteor.userId());
     let task ;
     let subtasks;
+    let order = {};
 
     if(tasksHandle.ready()){
         task = Tasks.findOne({_id: params.taskId});
-        subtasks = Tasks.find({_id: { $in: task.subTasks } }).fetch();
+        subtasks = Tasks.find({_id: { $in: task.subTasks } }, {sort: task.subTasks}).fetch();
+        task.subTasks.forEach(function (id, index) { order[id] = index; });
+        subtasks.sort((a, b) => {
+            return order[a._id] - order[b._id];
+        });
     }
 
     return {

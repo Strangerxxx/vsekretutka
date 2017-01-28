@@ -2,9 +2,9 @@ import {Meteor} from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
 import Tasks from '../tasks/tasks';
 
-export default Progress = new Meteor.Collection('progress');
+export default Actions = new Meteor.Collection('actions');
 
-Progress.schema = new SimpleSchema({
+Actions.schema = new SimpleSchema({
     createdAt: {
         type: Date,
         autoValue() {
@@ -24,23 +24,20 @@ Progress.schema = new SimpleSchema({
         type: String,
         allowedValues: [
             'attach',
-            'completion',
+            'result',
             'return',
             'deattach',
+            'continue',
         ]
     },
     message: {
         type: String,
-        optional: true,
+        optional: true
     },
     subTaskId: {
         type: Tasks,
         optional: true,
     },
-    approved: {
-        type: Boolean,
-        optional: true,
-    },
 });
 
-Progress.attachSchema(Progress.schema);
+Actions.attachSchema(Actions.schema);

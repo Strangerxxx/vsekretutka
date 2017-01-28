@@ -16,7 +16,7 @@ if(Meteor.isServer){
     });
 
     Meteor.methods({
-       'tasks.insert.main': (doc) => {
+       'tasks.insert.main': (doc, callback) => {
             let subTasks = [];
             for(let task of doc.subTasks){
                 if(task.select)
@@ -52,10 +52,6 @@ Tasks.schema = new SimpleSchema({
         type: String,
         label: 'Type',
         allowedValues: ['main'].concat(CompletionTypes.map((type)=>type.label)),
-        optional: true,
-    },
-    action: {
-        type: Object,
         optional: true,
     },
     subTasks: {
