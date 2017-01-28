@@ -32,6 +32,10 @@ if(Meteor.isServer){
                 subTasks: subTasks,
             })
         },
+        'tasks.remove': (taskId) => {
+           console.log('deleting task');
+           //add logic
+        }
     });
 }
 

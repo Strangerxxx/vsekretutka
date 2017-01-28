@@ -33,11 +33,10 @@ export default class Select extends Component{
             className = this.props.className;
 
         return(
-            <div className="form-group" id={this.props.id}>
+
                 <select className={className} id={this.props.id} defaultValue={props.value} name={name} onChange={this.selectHandler}>
                     {this.createOptions()}
                 </select>
-            </div>
         )
     }
 }

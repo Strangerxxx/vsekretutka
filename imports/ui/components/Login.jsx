@@ -12,7 +12,7 @@ class Logout extends Component{
     render() {
         return(
             <div className="logout-button">
-                <button className="btn btn-primary col-xs-12 col-sm-12" onClick={this.handleLogout.bind(this)}>
+                <button className="btn btn-primary form-control" onClick={this.handleLogout.bind(this)}>
                     Logout
                 </button>
             </div>
@@ -63,7 +63,7 @@ export class LoginForm extends Component{
                         ref="password"
                         placeholder="**********"
                     />
-                    <button type="submit" className="btn btn-primary col-xs-12 col-sm-12">Sign In</button>
+                    <button type="submit" className="btn btn-primary form-control">Sign In</button>
                 </form>
             </div>
         )

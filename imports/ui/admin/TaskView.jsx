@@ -31,16 +31,19 @@ class TaskView extends Component{
 
         for(let subtask of this.props.subtasks){
             //if(subtask.type != 'main'){
-                output.push(<SimpleTaskView key={subtask._id} task={subtask}/>)
+                output.push(<SimpleTaskView key={subtask._id} task={subtask}/>);
             //}
         }
 
         return output;
     }
 
+    userAttachSubmit(event){
+        event.preventDefault();
+    }
+
     render() {
         let task = this.props.task;
-        console.log(this.props.users)
         if(this.props.ready)
             return(
                 <div className="task-view">
@@ -59,11 +62,29 @@ class TaskView extends Component{
                     </div>
                     <hr/>
                     <div className="users-attach-form">
-                        <SelectFromUsers users={this.props.users} value={0} name="selectUser"/>
+                        <form onSubmit={this.userAttachSubmit}>
+                            <SelectFromUsers users={this.props.users} value={0} className="user-select" name="selectUser"/>
+                            <button type="Submit" className="btn btn-default">Attach</button>
+                        </form>
                     </div>
+                    <hr/>
                     <div className="users-attached">
+                        <strong>Users Attached:</strong>
+                        <ul>
+                            <li>
+                                <a className="text-valign-center" href="/admin/tasks/">user</a>
+                                <a className="unassign-user text-danger" >
+                                    <i className="fa fa-2x fa-times text-valign-center"/>
+                                </a>
 
+                                <a className="edit-variables text-info" >
+                                    <i className="fa fa-2x fa-edit text-valign-center"/>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
+                    <hr/>
+                    <button className="btn btn-danger" onClick={() => Meteor.call('tasks.remove', this.props.task._id)}>Delete</button>
                 </div>
             );
         else
