@@ -10,6 +10,9 @@ import UserIndex from '/imports/ui/user/UserIndex';
 import AddTask from '/imports/ui/admin/AddTask';
 import Navigation from '/imports/ui/admin/Navigation';
 import Users from '/imports/ui/admin/Users';
+import TaskList from '/imports/ui/admin/TaskList';
+import TaskView from '/imports/ui/admin/TaskView';
+import TestFileUpload from '/imports/ui/test/TestFileUpload';
 
 
 Meteor.startup( () => {
@@ -19,6 +22,9 @@ Meteor.startup( () => {
                 <Route path="/admin" components={{main: AdminIndex, navigation: Navigation}} >
                     <Route path='add' components={{main: AddTask }}/>
                     <Route path='users' components={{main: Users}}/>
+                    <Route path='tasks' components={{main: TaskList}}/>
+                    <Route path='tasks/:taskId' components={{main: TaskView}}/>
+                    <Route path='test/file' components={{main: TestFileUpload}}/>
                 </Route>
                 <Route path="/" components={{main: UserIndex}}>
 

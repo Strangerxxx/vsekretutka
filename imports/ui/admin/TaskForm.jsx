@@ -1,6 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
-import {StringInput, TextAreaInput, SelectFromArray} from '/imports/ui/components/formInputFields';
+import {StringInput, TextAreaInput, SelectFromTasks, SelectFromArray} from '/imports/ui/components/formInputFields';
+import CompletionTypes from '/imports/ui/components/completionTypes';
 import { Meteor } from 'meteor/meteor';
 
 export class MainTaskForm extends Component{
@@ -21,7 +22,7 @@ export class SimpleTaskForm extends Component{
         return(
             <div className="simpleTask">
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
-                <SelectFromArray tasks={schema.type.type.definitions[0].allowedValues}/>
+                <SelectFromArray array={CompletionTypes.map((item) => item.label)} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="type"/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
             </div>
         )
@@ -46,7 +47,7 @@ class StepFormWrap extends Component{
 export default class TaskForm extends Component{
     constructor(props){
         super(props);
-        this.state = { mainTask: {}, subTasks: []};
+        this.state = { mainTask: {}, subTasks: [], errorComponent: null};
 
         this.newSubTaskButtonHandler = this.newSubTaskButtonHandler.bind(this);
         this.deleteSubTaskButtonHandler = this.deleteSubTaskButtonHandler.bind(this);
@@ -70,15 +71,13 @@ export default class TaskForm extends Component{
             if(input.name == 'selectSubTasks')
                 break;
 
-            if(value == '' || value == 0 ){
-                $('[name =' + '"' + input.name + '"' +']').parent().addClass('has-error');
-            }
+            // if(value == '' || value == 0 ){
+            //     $('[name =' + '"' + input.name + '"' +']').parent().addClass('has-error');
+            // }
 
             if(split[0] == 'subTasks'){
                 if(document.subTasks[split[1]] == undefined)
-                    document.subTasks.push({
-                        type: 'simple',
-                    });
+                    document.subTasks.push({});
                 document.subTasks[split[1]][split[2]] = value;
             }else
                 document[input.name] = value;
@@ -86,7 +85,21 @@ export default class TaskForm extends Component{
 
         }
         console.log($('form').serialize());
-        Meteor.call('tasks.insert.main', document);
+        console.log(document)
+        Meteor.call('tasks.insert.main', document, (error, result) => {
+            if(error)
+                this.errorHandler(error);
+        });
+    }
+
+    errorHandler(error){
+        console.log(error)
+        this.state.errorComponent = (
+            <div className="alert alert-danger">
+                <span>{error.reason}</span>
+            </div>
+        );
+        this.forceUpdate();
     }
 
     emptyForm(){
@@ -123,7 +136,7 @@ export default class TaskForm extends Component{
         this.setState(() => this.state.subTasks.push({
             key:id,
             keyProp:id,
-            component: SelectFromArray,
+            component: SelectFromTasks,
             value:value,
             tasks: tasks,
             buttonCallback: this.deleteSubTaskButtonHandler
@@ -149,6 +162,7 @@ export default class TaskForm extends Component{
         return(
             <div className="task-form-body">
                 <form onSubmit={this.submitHandler}>
+                    {this.state.errorComponent}
                     <div className="col-md-5">
                         <MainTaskForm/>
                     </div>
@@ -163,7 +177,7 @@ export default class TaskForm extends Component{
                                     <div>
                                         <button type="button" className="btn btn-primary table-cell-plus" onClick={this.newSubTaskButtonHandler}><i className="fa fa-plus"/></button>
                                         <div className="table-cell-select">
-                                            <SelectFromArray tasks={this.filterTasks()} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
+                                            <SelectFromTasks tasks={this.filterTasks()} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
                                         </div>
                                     </div>
                                 </li>

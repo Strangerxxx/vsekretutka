@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import 'babel-polyfill';
 import SimpleSchema from 'simpl-schema';
 import CompletionTypes from '/imports/ui/components/completionTypes/';
 
@@ -45,14 +46,19 @@ Tasks.schema = new SimpleSchema({
     },
     type: {
         type: String,
-        allowedValues: CompletionTypes.map((type)=>type.label),
+        label: 'Type',
+        allowedValues: ['main'].concat(CompletionTypes.map((type)=>type.label)),
         optional: true,
     },
     action: {
         type: Object,
         optional: true,
     },
-    subTasks: [Tasks],
+    subTasks: {
+        type: Array,
+        optional: true,
+    },
+    'subTasks.$': Tasks,
     createdAt: {
         type: Date,
         autoValue(){
