@@ -22,14 +22,19 @@ export default class Select extends Component{
     render() {
         let props = this.props;
         let name;
+        let className = "table-cell-select form-control";
+
         if(props.index != undefined)
             name = props.prefix + '.' + props.index + '.' + props.name;
         else
             name = props.name;
 
+        if(this.props.className)
+            className = this.props.className;
+
         return(
             <div className="form-group" id={this.props.id}>
-                <select className="table-cell-select form-control" id={this.props.id} defaultValue={props.value} name={name} onChange={this.selectHandler}>
+                <select className={className} id={this.props.id} defaultValue={props.value} name={name} onChange={this.selectHandler}>
                     {this.createOptions()}
                 </select>
             </div>

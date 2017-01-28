@@ -169,7 +169,7 @@ export default class TaskForm extends Component{
                     <div className="col-md-7">
                         <div className="panel panel-default">
                             <div className="panel-heading">
-                                <h5>Sub-tasks</h5>
+                                <h4 className="panel-title">Sub-tasks</h4>
                             </div>
                             <ul className="list-group">
                                 {subTasks}
