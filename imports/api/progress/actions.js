@@ -4,6 +4,31 @@ import Tasks from '../tasks/tasks';
 
 export default Actions = new Meteor.Collection('actions');
 
+if(Meteor.isServer) {
+    Meteor.publish('actions.user', (userId) => {
+        if(userId)
+            return Actions.find({userId});
+    });
+    Meteor.publish('actions.admin', (userId) => {
+        if(Roles.userIsInRole(userId, 'admin'))
+            return Actions.find({adminUserId: userId});
+    });
+
+    Meteor.methods({
+        'actions.attach': (userId, adminUserId, MainTaskId) => {
+           if(Roles.userIsInRole(adminUserId, 'admin'))
+               Actions.insert({
+                   userId,
+                   adminUserId,
+                   MainTaskId,
+                   type: 'attach',
+               })
+        },
+        'actions.result': (userId, taskId, )
+
+    });
+}
+
 Actions.schema = new SimpleSchema({
     createdAt: {
         type: Date,

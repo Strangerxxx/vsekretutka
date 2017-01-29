@@ -20,7 +20,6 @@ export default class TextAreaInput extends Component {
 
     render() {
         let props = this.props;
-        console.log(this.state)
         return(
             <div className="form-group" id={props.id} name={this.state.name}>
                 <label className="control-label" htmlFor={this.props.id}> {this.props.schema[props.name].label} </label>

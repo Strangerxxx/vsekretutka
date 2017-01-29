@@ -60,11 +60,20 @@ export default class TaskForm extends Component{
             },
             subTasks: []
         };
-
         this.newSubTaskButtonHandler = this.newSubTaskButtonHandler.bind(this);
         this.deleteSubTaskButtonHandler = this.deleteSubTaskButtonHandler.bind(this);
         this.changeSelectHandler = this.changeSelectHandler.bind(this);
         this.submitHandler = this.submitHandler.bind(this);
+
+    }
+
+    componentWillReceiveProps(props) {
+        let doc = props.doc;
+        let subTasks = props.subTasks;
+        console.log(doc)
+        if(doc && subTasks){
+            this.state.mainTask = doc;
+        }
     }
 
     submitHandler(event){
@@ -98,7 +107,6 @@ export default class TaskForm extends Component{
                 this.errorHandler(error);
         });
     }
-
 
     errorHandler(error){
         let indexOfSubTask = error.details;
@@ -171,7 +179,6 @@ export default class TaskForm extends Component{
            />
         });
         let mainTaskForm = <MainTaskForm error={this.state.mainTask.error}/>;
-
         return(
             <div className="task-form-body">
                 <form onSubmit={this.submitHandler}>
