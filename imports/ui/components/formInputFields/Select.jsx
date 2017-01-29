@@ -4,6 +4,13 @@ export default class Select extends Component{
     constructor(props){
         super(props);
         this.selectHandler = this.selectHandler.bind(this);
+        this.state= {
+            name,
+        };
+        if(props.index != undefined)
+            this.state.name = props.prefix + '.' + props.index + '.' + props.name;
+        else
+            this.state.name = props.name;
     }
 
     createOptions(){
@@ -11,7 +18,7 @@ export default class Select extends Component{
     }
 
     selectHandler(event){
-        $('div#' + this.props.id).removeClass('has-error');
+        $("div#" + this.props.id).removeClass('has-error');
         let select = event.target;
         if(this.props.selectCallback && select.selectedIndex != 0){
             this.props.selectCallback(select.options[select.selectedIndex].value);
@@ -21,25 +28,14 @@ export default class Select extends Component{
 
     render() {
         let props = this.props;
-        let name;
         let className = "table-cell-select form-control";
-        let label;
-
-        if(props.index != undefined)
-            name = props.prefix + '.' + props.index + '.' + props.name;
-        else
-            name = props.name;
-
         if(props.className)
             className = this.props.className;
 
-        if(props.label)
-            label = <label htmlFor={props.id}>{props.label}</label>
-
         return(
-            <div>
-                {label}
-                <select className={className} id={this.props.id} defaultValue={props.value} name={name} onChange={this.selectHandler}>
+            <div name={this.state.name}>
+                {props.schema ? <label className="control-label" htmlFor={props.id}> { props.schema[props.name].label } </label> : ''}
+                <select className={className} id={this.props.id} defaultValue={props.value} name={this.state.name} onChange={this.selectHandler}>
                     {this.createOptions()}
                 </select>
             </div>

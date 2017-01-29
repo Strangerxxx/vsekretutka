@@ -22,14 +22,20 @@ if(Meteor.isServer){
                 if(task.select)
                     subTasks.push(task.select);
                 else
-                    subTasks.push(Tasks.insert(task))
+                    subTasks.push(Tasks.insert(task, (error) => {
+                        if(error)
+                            throw new Meteor.Error(error.sanitizedError.error, error.invalidKeys, doc.subTasks.indexOf(task));
+                    }))
             }
 
             Tasks.insert({
-                name: doc.name,
-                description: doc.description,
-                type: doc.type,
+                name: doc.main.name,
+                description: doc.main.description,
+                type: doc.main.type,
                 subTasks: subTasks,
+            },  (error) => {
+                if(error)
+                    throw new Meteor.Error(error.sanitizedError.error, error.invalidKeys, 'main');
             })
         },
         'tasks.remove': (taskId) => {
