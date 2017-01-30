@@ -128,6 +128,7 @@ export default class TaskForm extends Component{
     submitHandler(event){
         event.preventDefault();
         let form = $(event.target).serializeArray();
+        console.log(form)
         let schema = Tasks.schema;
         let document = {
             main: {
@@ -145,6 +146,7 @@ export default class TaskForm extends Component{
                 break;
 
             if(split[0] == 'subTasks'){
+                console.log(document)
                 if(document.subTasks[split[1]] == undefined)
                     document.subTasks.push({
                         _id: $('input[name="' + input.name + '"]').attr("id")

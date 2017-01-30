@@ -7,10 +7,6 @@ export default class Select extends Component{
         this.state= {
             name,
         };
-        if(props.index != undefined)
-            this.state.name = props.prefix + '.' + props.index + '.' + props.name;
-        else
-            this.state.name = props.name;
     }
 
     createOptions(){
@@ -31,6 +27,10 @@ export default class Select extends Component{
     render() {
         let props = this.props;
         let className = "table-cell-select form-control";
+        if(props.index != undefined)
+            this.state.name = props.prefix + '.' + props.index + '.' + props.name;
+        else
+            this.state.name = props.name;
         if(props.className)
             className = this.props.className;
         return(
