@@ -8,14 +8,14 @@ import SimpleSchema from 'simpl-schema';
 export class MainTaskForm extends Component{
     render(){
         let schema = Tasks.schema._schema;
-        let id = Random.id();
+        let id = this.props.id;
         return(
             <div id={id}>
                 {this.props.error ? <div className="alert alert-danger alert-dismissable">
                         {this.props.error}
                     </div> : ''}
-                <StringInput schema={schema} id={id} name="name" />
-                <TextAreaInput schema={schema} id={id} name="description"/>
+                <StringInput schema={schema} id={id} value={this.props.value['name']} name="name" />
+                <TextAreaInput schema={schema} id={id} value={this.props.value['description']} name="description"/>
             </div>
         )
     }
@@ -38,7 +38,7 @@ class StepFormWrap extends Component{
     constructor(props){
         super(props);
         this.state= {
-            value: {},
+            value: props.value ? props.value : {},
         };
         this.inputChangeCallback = this.inputChangeCallback.bind(this)
     }
@@ -67,8 +67,11 @@ export default class TaskForm extends Component{
     constructor(props){
         super(props);
         this.state = {
-            mainTask: {},
-            subTasks: []
+            mainTask: {
+                value: {}
+            },
+            subTasks: [],
+            update: !!props.doc
         };
         this.newSubTaskButtonHandler = this.newSubTaskButtonHandler.bind(this);
         this.deleteSubTaskButtonHandler = this.deleteSubTaskButtonHandler.bind(this);
@@ -77,12 +80,48 @@ export default class TaskForm extends Component{
 
     }
 
-    componentWillReceiveProps(props) {
-        let doc = props.doc;
-        let subTasks = props.subTasks;
-        console.log(doc)
-        if(doc && subTasks){
-            this.state.mainTask = doc;
+    componentWillMount() {
+        let tasks = this.filterTasks();
+        let doc = this.props.doc;
+        let subTasks = this.props.subTasks;
+        if (doc && subTasks ) {
+            this.state.mainTask = {
+                key:doc._id,
+                keyProp:doc._id,
+                value: {
+                    name: doc.name,
+                    description: doc.description,
+                }
+            };
+            for (let subTask of subTasks) {
+                if (subTask.type == 'main'){
+                    this.state.subTasks.push({
+                        key:subTask._id,
+                        keyProp:subTask._id,
+                        component: SelectFromTasks,
+                        value: subTask._id,
+                        tasks: tasks,
+                        error: null,
+                        buttonCallback: this.deleteSubTaskButtonHandler
+                    })
+                }
+                else{
+                    this.state.subTasks.push({
+                        key:subTask._id,
+                        keyProp:subTask._id,
+                        component: SimpleTaskForm,
+                        value: {
+                            name: subTask.name,
+                            description: subTask.description,
+                            type: subTask.type,
+                        },
+                        tasks: tasks,
+                        error: null,
+                        buttonCallback: this.deleteSubTaskButtonHandler
+                    })
+                }
+            }
+            this.forceUpdate();
         }
     }
 
@@ -107,14 +146,23 @@ export default class TaskForm extends Component{
 
             if(split[0] == 'subTasks'){
                 if(document.subTasks[split[1]] == undefined)
-                    document.subTasks.push({});
+                    document.subTasks.push({
+                        _id: $('input[name="' + input.name + '"]').attr("id")
+                    });
                 document.subTasks[split[1]][split[2]] = value;
-            }else
+            }else{
                 document.main[input.name] = value;
+                document.main["_id"] =  $('[name="' + input.name + '"]').attr("id")
+            }
         }
 
-        if(this.validate(document, schema))
-            Meteor.call('tasks.insert.main', document);
+        if(this.validate(document, schema)){
+            if(!this.state.update)
+                Meteor.call('tasks.insert.main', document);
+            else
+                Meteor.call('tasks.update.main', document);
+
+        }
 
     }
 
@@ -134,19 +182,20 @@ export default class TaskForm extends Component{
 
         //validating subTasks
         for(let subTask of document.subTasks){
-            if(!validationContext.validate(subTask, {keys: ['name', 'description', 'type']})){
-                pass = false;
-                let errors = validationContext.validationErrors()
-                this.state.subTasks[document.subTasks.indexOf(subTask)].error = 'Please fill in fields: ' + errors.map((item) => item.name);
-            }
-            else {
-                this.state.subTasks[document.subTasks.indexOf(subTask)].error = null;
+            if(!subTask.select){
+                if(!validationContext.validate(subTask, {keys: ['name', 'description', 'type']})){
+                    pass = false;
+                    let errors = validationContext.validationErrors()
+                    this.state.subTasks[document.subTasks.indexOf(subTask)].error = 'Please fill in fields: ' + errors.map((item) => item.name);
+                }
+                else {
+                    this.state.subTasks[document.subTasks.indexOf(subTask)].error = null;
+                }
             }
         }
         this.forceUpdate();
         return pass;
     }
-
 
     emptyForm(){
         this.state.subTasks = [];
@@ -209,7 +258,7 @@ export default class TaskForm extends Component{
                error={item.error}
            />
         });
-        let mainTaskForm = <MainTaskForm error={this.state.mainTask.error}/>;
+        let mainTaskForm = <MainTaskForm error={this.state.mainTask.error} value={this.state.mainTask.value} id={this.state.mainTask.keyProp}/>;
         return(
             <div className="task-form-body">
                 <form onSubmit={this.submitHandler}>

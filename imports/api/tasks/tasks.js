@@ -19,7 +19,7 @@ if(Meteor.isServer){
     });
 
     Meteor.methods({
-       'tasks.insert.main': (doc, callback) => {
+        'tasks.insert.main': (doc, callback) => {
             let subTasks = [];
             for(let task of doc.subTasks){
                 if(task.select)
@@ -44,6 +44,44 @@ if(Meteor.isServer){
         'tasks.remove': (taskId) => {
            console.log('deleting task');
            //add logic
+        },
+        'tasks.update.main' : (doc) => {
+            let subTasks = [], found;
+            for(let task of doc.subTasks){
+                if(task.select)
+                    subTasks.push(task.select);
+                else{
+                    if(found = Tasks.findOne(task._id)){
+                        subTasks.push(task._id)
+                        Tasks.update(task._id, {$set: {
+                            name: task.name,
+                            description: task.description,
+                            type: task.type,
+                            createdAt: found.createdAt,
+                        }}, (error) => {
+                            console.log(error)
+                            if(error)
+                                throw new Meteor.Error(error.sanitizedError.error, error.invalidKeys, doc.subTasks.indexOf(task));
+                        })
+                    }else{
+                        subTasks.push(Tasks.insert(task, (error) => {
+                            console.log(error)
+                            if(error)
+                                throw new Meteor.Error(error.sanitizedError.error, error.invalidKeys, doc.subTasks.indexOf(task));
+                        }))
+                    }
+                }
+            }
+            Tasks.update(doc.main._id, {$set: {
+                name: doc.main.name,
+                description: doc.main.description,
+                type: doc.main.type,
+                subTasks: subTasks,
+                createdAt: Tasks.findOne(doc.main._id).createdAt,
+            }},  (error) => {
+                if(error)
+                    throw new Meteor.Error(error.sanitizedError.error, error.invalidKeys, 'main');
+            })
         }
     });
 }
