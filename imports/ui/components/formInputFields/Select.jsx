@@ -33,7 +33,6 @@ export default class Select extends Component{
         let className = "table-cell-select form-control";
         if(props.className)
             className = this.props.className;
-        console.log(props.value)
         return(
             <div name={this.state.name}>
                 {props.schema ? <label className="control-label" htmlFor={props.id}> { props.schema[props.name].label } </label> : ''}

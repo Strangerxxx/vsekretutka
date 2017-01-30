@@ -23,7 +23,6 @@ export class MainTaskForm extends Component{
 
 export class SimpleTaskForm extends Component{
     render(){
-        console.log(this.props.value)
         let schema = Tasks.schema._schema;
         return(
             <div className="simpleTask">
