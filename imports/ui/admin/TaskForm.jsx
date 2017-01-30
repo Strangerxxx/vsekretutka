@@ -3,13 +3,14 @@ import Tasks from '/imports/api/tasks/tasks';
 import {StringInput, TextAreaInput, SelectFromTasks, SelectFromArray} from '/imports/ui/components/formInputFields';
 import CompletionTypes from '/imports/ui/components/completionTypes';
 import { Meteor } from 'meteor/meteor';
+import SimpleSchema from 'simpl-schema';
 
 export class MainTaskForm extends Component{
     render(){
         let schema = Tasks.schema._schema;
         let id = Random.id();
         return(
-            <div id={id} className={this.props.error ? 'has-error' : '' + "mainTask"}>
+            <div id={id}>
                 {this.props.error ? <div className="alert alert-danger alert-dismissable">
                         {this.props.error}
                     </div> : ''}
@@ -22,28 +23,40 @@ export class MainTaskForm extends Component{
 
 export class SimpleTaskForm extends Component{
     render(){
+        console.log(this.props.value)
         let schema = Tasks.schema._schema;
         return(
             <div className="simpleTask">
-                <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="name"/>
-                <SelectFromArray array={CompletionTypes.map((item) => item.label)} schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value} name="type"/>
-                <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value} name="description"/>
+                <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value['name']} name="name" callback={this.props.callback}/>
+                <SelectFromArray array={CompletionTypes.map((item) => item.label)} schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} callback={this.props.callback} value={this.props.value['type']} name="type"/>
+                <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value['description']} name="description" callback={this.props.callback}/>
             </div>
         )
     }
 }
 
 class StepFormWrap extends Component{
+    constructor(props){
+        super(props);
+        this.state= {
+            value: {},
+        };
+        this.inputChangeCallback = this.inputChangeCallback.bind(this)
+    }
+    inputChangeCallback(inputName, value){
+        this.state.value[inputName] = value;
+        this.forceUpdate()
+    }
     render(){
         return(
             <li className="list-group-item">
-                <div className={this.props.error ? 'has-error' : ''} id={this.props.keyProp}>
+                <div id={this.props.keyProp}>
                     <button type="button" className="btn btn-primary table-cell-plus" onClick={() => {this.props.buttonCallback(this.props.keyProp)}}><i className="fa fa-minus"/></button>
                     <div className="table-cell-select">
                         {this.props.error ? <div className="alert alert-danger alert-dismissable">
                             {this.props.error}
                         </div> : ''}
-                        <this.props.component tasks={this.props.tasks} prefix='subTasks' value={this.props.value} id={this.props.keyProp} name='select' callback={this.props.callback} index={this.props.index}/>
+                        <this.props.component tasks={this.props.tasks} prefix='subTasks' value={this.state.value} id={this.props.keyProp} name='select' callback={this.inputChangeCallback} index={this.props.index}/>
                     </div>
                 </div>
             </li>
@@ -55,9 +68,7 @@ export default class TaskForm extends Component{
     constructor(props){
         super(props);
         this.state = {
-            mainTask: {
-
-            },
+            mainTask: {},
             subTasks: []
         };
         this.newSubTaskButtonHandler = this.newSubTaskButtonHandler.bind(this);
@@ -89,6 +100,7 @@ export default class TaskForm extends Component{
         for(let input of form){
             let value = input.value;
             value = value.trim();
+            if(value == '') value = null;
             let split = input.name.split('.');
 
             if(input.name == 'selectSubTasks')
@@ -102,21 +114,40 @@ export default class TaskForm extends Component{
                 document.main[input.name] = value;
         }
 
-        Meteor.call('tasks.insert.main', document, (error, result) => {
-            if(error)
-                this.errorHandler(error);
-        });
+        if(this.validate(document, schema))
+            Meteor.call('tasks.insert.main', document);
+
     }
 
-    errorHandler(error){
-        let indexOfSubTask = error.details;
-        console.log(error)
-        if(indexOfSubTask == 'main')
-            this.state.mainTask.error = "Please fill in the fields: " + error.reason.map((item) => item.name);
-        else
-            this.state.subTasks[indexOfSubTask].error = "Please fill in the fields: " + error.reason.map((item) => item.name);
+    validate(document, schema){
+        const validationContext = schema.newContext();
+        let pass = true;
+
+        //Validating main task
+        if(!validationContext.validate(document.main, {keys: ['name', 'description', 'type']})){
+            pass = false;
+            let errors = validationContext.validationErrors();
+            this.state.mainTask.error = 'Please fill in fields: ' + errors.map((item) => item.name);
+        }
+        else{
+            this.state.mainTask.error = null;
+        }
+
+        //validating subTasks
+        for(let subTask of document.subTasks){
+            if(!validationContext.validate(subTask, {keys: ['name', 'description', 'type']})){
+                pass = false;
+                let errors = validationContext.validationErrors()
+                this.state.subTasks[document.subTasks.indexOf(subTask)].error = 'Please fill in fields: ' + errors.map((item) => item.name);
+            }
+            else {
+                this.state.subTasks[document.subTasks.indexOf(subTask)].error = null;
+            }
+        }
         this.forceUpdate();
+        return pass;
     }
+
 
     emptyForm(){
         this.state.subTasks = [];
@@ -144,6 +175,7 @@ export default class TaskForm extends Component{
             tasks: this.filterTasks(),
             buttonCallback: this.deleteSubTaskButtonHandler,
             error: null,
+            value: {},
         }));
     }
 
@@ -196,7 +228,7 @@ export default class TaskForm extends Component{
                                     <div>
                                         <button type="button" className="btn btn-primary table-cell-plus" onClick={this.newSubTaskButtonHandler}><i className="fa fa-plus"/></button>
                                         <div className="table-cell-select">
-                                            <SelectFromTasks tasks={this.filterTasks()} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
+                                            <SelectFromTasks tasks={this.filterTasks()} id={Random.id()} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
                                         </div>
                                     </div>
                                 </li>

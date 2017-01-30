@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import 'babel-polyfill';
 import SimpleSchema from 'simpl-schema';
 import CompletionTypes from '/imports/ui/components/completionTypes/';
+import Actions from '../actions/actions';
 
 export default Tasks = new Meteor.Collection('tasks');
 
@@ -11,8 +12,10 @@ if(Meteor.isServer){
             return null;
         else if(Roles.userIsInRole(userId, 'admin'))
             return Tasks.find();
-        else
-            return null; //create logic for users
+        else{
+            let taskArray = Actions.find({userId, type: 'attach'}).map((item) => item._id);
+            console.log(taskArray)
+        }
     });
 
     Meteor.methods({

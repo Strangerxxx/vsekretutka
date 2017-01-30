@@ -2,7 +2,7 @@ import React, { Component, PropTypes} from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 
-class TaskList extends Component{
+export class TaskList extends Component{
     createTaskList(){
         let options = [];
         for(let task of this.props.tasks){

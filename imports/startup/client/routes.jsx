@@ -6,7 +6,6 @@ import { Meteor } from 'meteor/meteor';
 
 import App from '../../ui/App.jsx';
 import AdminIndex from '/imports/ui/admin/AdminIndex';
-import UserIndex from '/imports/ui/user/UserIndex';
 import AddTask from '/imports/ui/admin/AddTask';
 import Navigation from '/imports/ui/admin/Navigation';
 import Users from '/imports/ui/admin/Users';
@@ -15,6 +14,8 @@ import TaskView from '/imports/ui/admin/TaskView';
 import TestFileUpload from '/imports/ui/test/TestFileUpload';
 import EditTask from '/imports/ui/admin/EditTask';
 
+import UserIndex from '/imports/ui/user/UserIndex';
+import UserTaskList from '/imports/ui/user/UserTaskList';
 
 Meteor.startup( () => {
     render(
@@ -28,7 +29,7 @@ Meteor.startup( () => {
                     <Route path='tasks/:taskId/edit' components={{main: EditTask}}/>
                     <Route path='test/file' components={{main: TestFileUpload}}/>
                 </Route>
-                <Route path="/" components={{main: UserIndex}}>
+                <Route path="/" components={{main: UserIndex, navigation: UserTaskList}}>
 
                 </Route>
             </Route>

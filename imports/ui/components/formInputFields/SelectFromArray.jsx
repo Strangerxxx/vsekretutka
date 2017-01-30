@@ -2,9 +2,6 @@ import React, { Component, PropTypes} from 'react';
 import Select from './Select';
 
 export default class SelectFromArray extends Select{
-    selectHandler(){
-        return null;
-    }
 
     createOptions(){
         let options = [];

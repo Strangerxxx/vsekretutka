@@ -15,7 +15,7 @@ export default class TextAreaInput extends Component {
     }
 
     changeValue(event){
-        $("div#" + this.props.id).removeClass('has-error');
+        this.props.callback(this.props.name, event.target.value);
     }
 
     render() {

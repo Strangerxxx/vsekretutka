@@ -18,8 +18,10 @@ export default class Select extends Component{
     }
 
     selectHandler(event){
-        $("div#" + this.props.id).removeClass('has-error');
         let select = event.target;
+        if(this.props.callback){
+            this.props.callback(this.props.name, event.target.value);
+        }
         if(this.props.selectCallback && select.selectedIndex != 0){
             this.props.selectCallback(select.options[select.selectedIndex].value);
             select.selectedIndex=0;
@@ -31,11 +33,11 @@ export default class Select extends Component{
         let className = "table-cell-select form-control";
         if(props.className)
             className = this.props.className;
-
+        console.log(props.value)
         return(
             <div name={this.state.name}>
                 {props.schema ? <label className="control-label" htmlFor={props.id}> { props.schema[props.name].label } </label> : ''}
-                <select className={className} id={this.props.id} defaultValue={props.value} name={this.state.name} onChange={this.selectHandler}>
+                <select className={className} id={props.id} value={props.value} name={this.state.name} onChange={this.selectHandler}>
                     {this.createOptions()}
                 </select>
             </div>

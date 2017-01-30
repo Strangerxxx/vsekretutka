@@ -14,10 +14,11 @@ export default class StringInput extends Component {
     }
 
     changeValue(event){
-        $("div#" + this.props.id).removeClass('has-error');
+        this.props.callback(this.props.name, event.target.value);
     }
 
     render() {
+
         let props = this.props;
         return(
             <div className={this.state.class} id={props.id} name={this.state.name}>

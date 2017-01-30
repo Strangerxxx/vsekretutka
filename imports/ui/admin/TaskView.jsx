@@ -24,6 +24,7 @@ class SimpleTaskView extends Component{
 class TaskView extends Component{
     constructor(props){
         super(props);
+        this.userAttachSubmit = this.userAttachSubmit.bind(this);
     }
 
     renderSimpleTasks(){
@@ -40,6 +41,8 @@ class TaskView extends Component{
 
     userAttachSubmit(event){
         event.preventDefault();
+        let form = $(event.target).serializeArray();
+        Meteor.call('actions.attach', form[0].value, Meteor.userId(), this.props.task._id, (error) => console.log(error));
     }
 
     render() {
