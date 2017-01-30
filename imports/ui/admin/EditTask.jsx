@@ -6,10 +6,11 @@ import { createContainer } from 'meteor/react-meteor-data';
 class EditTask extends Component{
     render(){
         if(this.props.ready){
-            console.log(this.props)
             return(
                 <div className="container-fluid">
                     <legend>Edit Task</legend>
+                    <a href={'/admin/tasks/' + this.props.task._id} className="btn btn-default">Back to Task</a>
+                    <hr/>
                     <div className="row">
                         <TaskForm tasks={this.props.tasks} doc={this.props.task} subTasks={this.props.subTasks}/>
                     </div>

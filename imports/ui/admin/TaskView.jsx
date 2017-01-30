@@ -52,6 +52,7 @@ class TaskView extends Component{
                 <div className="task-view">
                     <div className="task">
                         <article className="text-muted">{task.createdAt.toLocaleString()}</article>
+                        <a className="btn btn-default pull-right" href={task._id + "/edit"}>Edit</a>
                         <h2>{task.name}</h2>
                         <div className="description">
                             <span>{task.description}</span>
