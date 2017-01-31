@@ -16,20 +16,23 @@ if(Meteor.isServer) {
 
     Meteor.methods({
         'actions.attach': (userId, adminUserId, mainTaskId) => {
-           if(Roles.userIsInRole(adminUserId, 'admin')){
-                console.log(Actions.find({userId, adminUserId, mainTaskId, type: 'attach'}).count())
-                if(Actions.find({userId, adminUserId, mainTaskId, type: 'attach'}).count() == Actions.find({userId, adminUserId, mainTaskId, type: 'deattach'}).count())
-                   Actions.insert({
-                       userId,
-                       adminUserId,
-                       mainTaskId,
-                       type: 'attach',
-                   });
-               else{
-                   let user = Meteor.users.findOne(userId);
-                   throw new Meteor.Error('User ' + user.profile.firstName + ' ' + user.profile.lastName + ' is already attached to this task');
-               }
-           }
+            let user = Meteor.users.findOne(userId);
+            if(Roles.userIsInRole(adminUserId, 'admin')){
+                 console.log(Actions.find({userId, adminUserId, mainTaskId, type: 'attach'}).count())
+                 if(!user.profile.tasks || user.profile.tasks.indexOf(mainTaskId) == -1)
+                    Actions.insert({
+                        userId,
+                        adminUserId,
+                        mainTaskId,
+                        type: 'attach',
+                    }, (error) => {
+                     if(!error)
+                         Meteor.users.update(userId, {$push: {'profile.tasks': mainTaskId}});
+                    });
+                else{
+                    throw new Meteor.Error('User ' + user.profile.firstName + ' ' + user.profile.lastName + ' is already attached to this task');
+                }
+            }
         },
         'actions.result': (userId, mainTaskId, adminUserId, subTaskId, result) => {
             Actions.insert({
@@ -51,13 +54,22 @@ if(Meteor.isServer) {
                 type: 'return'
             });
         },
-        'actions.deattach': (userId, mainTaskId, adminUserId) => {
-            Actions.insert({
-                userId,
-                mainTaskId,
-                adminUserId,
-                type: 'deattach',
-            })
+        'actions.deattach': (userId, adminUserId, mainTaskId) => {
+            let user = Meteor.users.findOne(userId);
+            if(Roles.userIsInRole(adminUserId, 'admin'))
+                if(user.profile.tasks && user.profile.tasks.indexOf(mainTaskId) != -1)
+                    Actions.insert({
+                        userId,
+                        mainTaskId,
+                        adminUserId,
+                        type: 'deattach',
+                    }, (error) => {
+                        if(!error)
+                            Meteor.users.update(userId, {$pull: {'profile.tasks': mainTaskId}})
+                    });
+            else
+                throw new Meteor.Error(userId + ' does not have this task attached: ' + mainTaskId);
+
         },
         'actions.continue': (userId, mainTaskId, adminUserId, subTaskId, message) => {
             Actions.insert({

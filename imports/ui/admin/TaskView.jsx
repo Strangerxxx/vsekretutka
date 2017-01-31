@@ -50,10 +50,39 @@ class TaskView extends Component{
             Meteor.call('actions.attach', form[0].value, Meteor.userId(), this.props.task._id, (error) => console.log(error));
     }
 
-    userSelectCallback(value){
-        console.log(value)
+    userSelectCallback(value) {
         this.state.selectValue = value;
         this.forceUpdate();
+    }
+
+    renderAttachedUsers(){
+        let output = [];
+        for(let user of this.props.users){
+            if(user.profile.tasks){
+                for(let task of user.profile.tasks){
+                    if(task == this.props.task._id){
+                        output.push(
+                            <li key={user._id}>
+                                <a className="text-valign-center" href="/admin/tasks/">{user.profile.firstName + ' ' + user.profile.lastName}</a>
+                                <a className="unassign-user text-danger" onClick={() => this.userDeattach(user._id)}>
+                                    <i className="fa fa-2x fa-times text-valign-center"/>
+                                </a>
+
+                                <a className="edit-variables text-info" >
+                                    <i className="fa fa-2x fa-edit text-valign-center"/>
+                                </a>
+                            </li>
+                        );
+                        break;
+                    }
+                }
+            }
+        }
+        return output;
+    }
+
+    userDeattach(userId){
+        Meteor.call('actions.deattach', userId, Meteor.userId(), this.props.task._id);
     }
 
     render() {
@@ -86,16 +115,7 @@ class TaskView extends Component{
                     <div className="users-attached">
                         <strong>Users Attached:</strong>
                         <ul>
-                            <li>
-                                <a className="text-valign-center" href="/admin/tasks/">user</a>
-                                <a className="unassign-user text-danger" >
-                                    <i className="fa fa-2x fa-times text-valign-center"/>
-                                </a>
-
-                                <a className="edit-variables text-info" >
-                                    <i className="fa fa-2x fa-edit text-valign-center"/>
-                                </a>
-                            </li>
+                            {this.renderAttachedUsers()}
                         </ul>
                     </div>
                     <hr/>
