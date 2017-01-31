@@ -41,15 +41,45 @@ class StepFormWrap extends Component{
             value: props.value ? props.value : {},
         };
         this.inputChangeCallback = this.inputChangeCallback.bind(this)
+        this.drop = this.drop.bind(this);
+        this.dragStart = this.dragStart.bind(this);
     }
     inputChangeCallback(inputName, value){
         this.state.value[inputName] = value;
         this.forceUpdate()
     }
+
+    dragEnter(event){
+        event.preventDefault();
+        if(!$(event.target).is('div'))
+            return;
+        console.log(event.dataTransfer.getData('text'))
+        $(event.target).addClass('on-drag-over');
+    }
+
+    dragLeave(event){
+        event.preventDefault();
+        if(!$(event.target).is('div'))
+            return;
+        $(event.target).removeClass('on-drag-over');
+    }
+
+    drop(event){
+        event.preventDefault();
+        let droppedDiv = event.dataTransfer.getData('text');
+        let target = this.props.index;
+        $(event.nativeEvent.target).removeClass('on-drag-over');
+        this.props.dropCallback(droppedDiv, target);
+    }
+
+    dragStart(event){
+        event.dataTransfer.setData('text', this.props.index);
+    }
+
     render(){
         return(
-            <li className="list-group-item">
-                <div id={this.props.keyProp}>
+            <li className="list-group-item" >
+                <div id={this.props.keyProp} className="draggable-mouse" draggable="true" onDragStart={this.dragStart} onDragEnter={this.dragEnter} onDragOver={(event)=>event.preventDefault()} onDragLeave={this.dragLeave} onDrop={this.drop}>
                     <button type="button" className="btn btn-primary table-cell-plus" onClick={() => {this.props.buttonCallback(this.props.keyProp)}}><i className="fa fa-minus"/></button>
                     <div className="table-cell-select">
                         {this.props.error ? <div className="alert alert-danger alert-dismissable">
@@ -77,6 +107,7 @@ export default class TaskForm extends Component{
         this.deleteSubTaskButtonHandler = this.deleteSubTaskButtonHandler.bind(this);
         this.changeSelectHandler = this.changeSelectHandler.bind(this);
         this.submitHandler = this.submitHandler.bind(this);
+        this.dropCallback = this.dropCallback.bind(this);
 
     }
 
@@ -102,7 +133,8 @@ export default class TaskForm extends Component{
                         value: subTask._id,
                         tasks: tasks,
                         error: null,
-                        buttonCallback: this.deleteSubTaskButtonHandler
+                        buttonCallback: this.deleteSubTaskButtonHandler,
+                        dropCallback: this.dropCallback,
                     })
                 }
                 else{
@@ -117,7 +149,8 @@ export default class TaskForm extends Component{
                         },
                         tasks: tasks,
                         error: null,
-                        buttonCallback: this.deleteSubTaskButtonHandler
+                        buttonCallback: this.deleteSubTaskButtonHandler,
+                        dropCallback: this.dropCallback,
                     })
                 }
             }
@@ -128,7 +161,7 @@ export default class TaskForm extends Component{
     submitHandler(event){
         event.preventDefault();
         let form = $(event.target).serializeArray();
-        console.log(form)
+
         let schema = Tasks.schema;
         let document = {
             main: {
@@ -226,7 +259,30 @@ export default class TaskForm extends Component{
             buttonCallback: this.deleteSubTaskButtonHandler,
             error: null,
             value: {},
+            dropCallback: this.dropCallback,
         }));
+    }
+
+    dropCallback(droppedDiv, dropTarget){
+        let subTasks = this.state.subTasks;
+        let targetElement = subTasks[droppedDiv];
+        if(droppedDiv < dropTarget){
+            let sliced = subTasks.slice(dropTarget+1);
+            subTasks.splice(dropTarget+1);
+            subTasks.splice(droppedDiv, 1);
+            subTasks.push(targetElement);
+            subTasks = subTasks.concat(sliced);
+        }
+        else{
+            subTasks.splice(droppedDiv, 1);
+            let sliced = subTasks.slice(dropTarget);
+            subTasks.splice(dropTarget);
+            subTasks.push(targetElement);
+            subTasks = subTasks.concat(sliced);
+            console.log(subTasks)
+        }
+        this.state.subTasks = subTasks;
+        this.forceUpdate();
     }
 
     changeSelectHandler(value){
@@ -239,9 +295,12 @@ export default class TaskForm extends Component{
             value:value,
             tasks: tasks,
             error: null,
-            buttonCallback: this.deleteSubTaskButtonHandler
+            buttonCallback: this.deleteSubTaskButtonHandler,
+            dropCallback: this.dropCallback,
         }));
     }
+
+
 
     filterTasks() {
         return this.props.tasks.filter((task) => (task.type == 'main'));
@@ -257,6 +316,7 @@ export default class TaskForm extends Component{
                tasks={item.tasks}
                value={item.value}
                buttonCallback={item.buttonCallback}
+               dropCallback={item.dropCallback}
                error={item.error}
            />
         });
