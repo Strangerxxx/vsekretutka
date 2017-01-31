@@ -25,6 +25,10 @@ class TaskView extends Component{
     constructor(props){
         super(props);
         this.userAttachSubmit = this.userAttachSubmit.bind(this);
+        this.userSelectCallback = this.userSelectCallback.bind(this);
+        this.state =  {
+            selectValue: 0,
+        }
     }
 
     renderSimpleTasks(){
@@ -42,7 +46,14 @@ class TaskView extends Component{
     userAttachSubmit(event){
         event.preventDefault();
         let form = $(event.target).serializeArray();
-        Meteor.call('actions.attach', form[0].value, Meteor.userId(), this.props.task._id, (error) => console.log(error));
+        if(form[0].value != 0)
+            Meteor.call('actions.attach', form[0].value, Meteor.userId(), this.props.task._id, (error) => console.log(error));
+    }
+
+    userSelectCallback(value){
+        console.log(value)
+        this.state.selectValue = value;
+        this.forceUpdate();
     }
 
     render() {
@@ -67,7 +78,7 @@ class TaskView extends Component{
                     <hr/>
                     <div className="users-attach-form">
                         <form onSubmit={this.userAttachSubmit}>
-                            <SelectFromUsers users={this.props.users} value={0} className="user-select" name="selectUser"/>
+                            <SelectFromUsers selectCallback={this.userSelectCallback} users={this.props.users} value={this.state.selectValue} className="user-select" name="selectUser"/>
                             <button type="Submit" className="btn btn-default">Attach</button>
                         </form>
                     </div>
@@ -101,6 +112,7 @@ class TaskView extends Component{
 export default createContainer(({params}) => {
     let tasksHandle = Meteor.subscribe('tasks', Meteor.userId());
     let usersHandle = Meteor.subscribe('users', Meteor.userId());
+    let actionsHandle = Meteor.subscribe('actions.admin', Meteor.userId())
     let task ;
     let subtasks;
     let order = {};
@@ -117,7 +129,7 @@ export default createContainer(({params}) => {
     return {
         task,
         subtasks,
-        ready: tasksHandle.ready() && usersHandle.ready(),
+        ready: tasksHandle.ready() && usersHandle.ready() && actionsHandle.ready(),
         users: Meteor.users.find().fetch().filter((user) => !Roles.userIsInRole(user._id, 'admin')),
     }
 }, TaskView)

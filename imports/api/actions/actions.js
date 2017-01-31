@@ -16,9 +16,9 @@ if(Meteor.isServer) {
 
     Meteor.methods({
         'actions.attach': (userId, adminUserId, mainTaskId) => {
-            console.log(userId,adminUserId,mainTaskId)
            if(Roles.userIsInRole(adminUserId, 'admin')){
-               if(!Actions.findOne(userId, mainTaskId) || (Actions.findOne({userId, mainTaskId, type: 'attach'}) && Actions.findOne({userId, mainTaskId, type: 'deattach'}) ) )
+                console.log(Actions.find({userId, adminUserId, mainTaskId, type: 'attach'}).count())
+                if(Actions.find({userId, adminUserId, mainTaskId, type: 'attach'}).count() == Actions.find({userId, adminUserId, mainTaskId, type: 'deattach'}).count())
                    Actions.insert({
                        userId,
                        adminUserId,

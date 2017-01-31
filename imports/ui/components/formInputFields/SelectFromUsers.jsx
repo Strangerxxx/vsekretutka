@@ -2,6 +2,16 @@ import React, { Component, PropTypes} from 'react';
 import Select from './Select';
 
 export default class SelectFromUsers extends Select{
+    constructor(props) {
+        super(props);
+        this.selectHandler = this.selectHandler.bind(this);
+    }
+    selectHandler(event){
+        let select = event.target;
+        if(this.props.selectCallback){
+            this.props.selectCallback(select.options[select.selectedIndex].value);
+        }
+    }
 
     createOptions() {
         let options = [];
