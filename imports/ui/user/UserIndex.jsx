@@ -21,7 +21,7 @@ class UserIndex extends Component {
         const {main, navigation} = this.props;
         return (
             <div className="content">
-                HELLO WORLD
+                {main}
             </div>
         )
     }

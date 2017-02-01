@@ -2,6 +2,7 @@ import React, { Component, PropTypes} from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { SelectFromUsers } from '/imports/ui/components/formInputFields';
+import Actions from '/imports/api/actions/actions';
 
 class SimpleTaskView extends Component{
     render() {
@@ -58,25 +59,19 @@ class TaskView extends Component{
     renderAttachedUsers(){
         let output = [];
         for(let user of this.props.users){
-            if(user.profile.tasks){
-                for(let task of user.profile.tasks){
-                    if(task == this.props.task._id){
-                        output.push(
-                            <li key={user._id}>
-                                <a className="text-valign-center" href="/admin/tasks/">{user.profile.firstName + ' ' + user.profile.lastName}</a>
-                                <a className="unassign-user text-danger" onClick={() => this.userDeattach(user._id)}>
-                                    <i className="fa fa-2x fa-times text-valign-center"/>
-                                </a>
+            if(Actions.userIsAttachedByAdmin(user._id, this.props.task._id, Meteor.userId()))
+                output.push(
+                    <li key={user._id}>
+                        <a className="text-valign-center" href="/admin/tasks/">{user.profile.firstName + ' ' + user.profile.lastName}</a>
+                        <a className="unassign-user text-danger" onClick={() => this.userDeattach(user._id)}>
+                            <i className="fa fa-2x fa-times text-valign-center"/>
+                        </a>
 
-                                <a className="edit-variables text-info" >
-                                    <i className="fa fa-2x fa-edit text-valign-center"/>
-                                </a>
-                            </li>
-                        );
-                        break;
-                    }
-                }
-            }
+                        <a className="edit-variables text-info" >
+                            <i className="fa fa-2x fa-edit text-valign-center"/>
+                        </a>
+                    </li>
+                );
         }
         return output;
     }

@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
-import Tasks from '../tasks/tasks';
+import Actions from '../actions/actions';
 
 Schema = {};
 
@@ -39,11 +39,11 @@ Schema.UserProfile = new SimpleSchema({
         type: String,
         unique: true
     },
-    tasks: {
+    attachIds: {
         type: Array,
         optional: true,
     },
-    'tasks.$' : Tasks,
+    'attachIds.$' : Actions,
 });
 
 Schema.User = new SimpleSchema({

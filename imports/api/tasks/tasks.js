@@ -13,8 +13,11 @@ if(Meteor.isServer){
         else if(Roles.userIsInRole(userId, 'admin'))
             return Tasks.find();
         else{
-            let taskArray = Actions.find({userId, type: 'attach'}).map((item) => item._id);
-            console.log(taskArray)
+            return Tasks.find({_id: {
+                $in: Actions.find(
+                    {_id: { $in: Meteor.users.findOne(userId).profile.attachIds
+                }}).map((item) => item.mainTaskId)
+            }});
         }
     });
 
