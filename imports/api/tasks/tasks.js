@@ -21,6 +21,14 @@ if(Meteor.isServer){
         }
     });
 
+    Meteor.publish('tasks.subTasks', (userId, mainTaskId) => {
+        if(userId && mainTaskId){
+            if(Actions.userIsAttached(userId, mainTaskId))
+                return Tasks.find({_id: {$in: Tasks.findOne({_id: mainTaskId}).subTasks}})
+        }
+
+    });
+
     Meteor.methods({
         'tasks.insert.main': (doc, callback) => {
             let subTasks = [];

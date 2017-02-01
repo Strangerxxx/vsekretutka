@@ -18,7 +18,7 @@ class UserIndex extends Component {
     }
 
     render() {
-        const {main, navigation} = this.props;
+        const { main } = this.props;
         return (
             <div className="content">
                 {main}

@@ -139,14 +139,14 @@ Schema.newUser = new SimpleSchema({
 Meteor.users.attachSchema(Schema.User);
 
 if(Meteor.isServer){
-    Meteor.publish("users", function () {
+    Meteor.publish("users", function (userId) {
         let query;
-        if(Roles.userIsInRole(this.userId, 'root'))
+        if(Roles.userIsInRole(userId, 'root'))
             query = {};
-        else if(Roles.userIsInRole(this.userId, 'admin'))
+        else if(Roles.userIsInRole(userId, 'admin'))
             query = {roles: {$nin: ['admin']}};
         else
-            query = {_id: this.userId};
+            query = {_id: userId};
         return Meteor.users.find(query, {fields: {emails: 1, profile: 1, createdAt: 1, roles: 1}});
     });
 

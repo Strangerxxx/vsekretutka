@@ -12,6 +12,14 @@ Actions.userIsAttachedByAdmin = (userId, mainTaskId, adminUserId) => {
     return ( !Actions.findOne({attachId: lastAttachActionId, type: 'deattach'}) ) ? lastAttachActionId : false ;
 };
 
+Actions.userIsAttached = (userId, mainTaskId) => {
+    let attachActions = Actions.find({userId, mainTaskId, type: 'attach'}).fetch();
+    if(!attachActions.length)
+        return false;
+    let lastAttachActionId = attachActions[attachActions.length-1]._id;
+    return ( !Actions.findOne({attachId: lastAttachActionId, type: 'deattach'}) ) ? lastAttachActionId : false ;
+};
+
 if(Meteor.isServer) {
     Meteor.publish('actions.user', (userId) => {
         if(userId)
@@ -40,13 +48,16 @@ if(Meteor.isServer) {
                 }
             }
         },
-        'actions.result': (userId, mainTaskId, adminUserId, subTaskId, result) => {
+        'actions.result': (userId, mainTaskId, subTaskId, result, attachId) => {
+            console.log(result)
+            let adminUserId = Actions.findOne(attachId).adminUserId;
             Actions.insert({
                 userId,
                 mainTaskId,
                 adminUserId,
                 subTaskId,
                 result,
+                attachId,
                 type: 'result'
             });
         },
@@ -129,6 +140,7 @@ Actions.schema = new SimpleSchema({
     result: {
         type: Object,
         optional: true,
+        blackbox: true
     },
     attachId: {
         type: Actions,
