@@ -63,6 +63,6 @@ class Users extends Component {
 export default createContainer(() => {
     return{
         users: Meteor.users.find().fetch(),
-        subscriptionReady: Meteor.subscribe('users').ready(),
+        subscriptionReady: Meteor.subscribe('users', Meteor.userId()).ready(),
     }
 }, Users);

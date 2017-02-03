@@ -4,7 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data'
 import CompletionTypes from '../components/completionTypes';
 import Actions from '/imports/api/actions/actions';
 
-class ActiveSubTask extends Component{
+class SimpleTaskView extends Component{
     constructor(props){
         super(props);
         this.completionCallback = this.completionCallback.bind(this);
@@ -46,14 +46,29 @@ class ActiveSubTask extends Component{
     }
 }
 
+class MainTaskView extends Component{
+    render() {
+        return(
+            <div className="userTaskView">
+                <h2>{this.props.task.name}</h2>
+                <div className="description">
+                    <span>{this.props.task.description}</span>
+                </div>
+                <hr/>
+                {this.drawActiveStep()}
+            </div>
+        )
+    }
+}
+
 class UserTaskView extends Component{
     drawActiveStep() {
         for (let subTask of this.props.subTasks)
         {
             if(!Actions.findOne({type: 'result', subTaskId: subTask._id, mainTaskId: this.props.task._id, adminUserId: this.props.adminUserId}))
-                return (<ActiveSubTask task={subTask} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
+                return (<SimpleTask task={subTask} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
         }
-        return (<ActiveSubTask task={null} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
+        return (<SimpleTask task={null} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
     }
 
     render() {
