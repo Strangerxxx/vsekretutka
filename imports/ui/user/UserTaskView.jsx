@@ -65,10 +65,10 @@ class UserTaskView extends Component{
     drawActiveStep() {
         for (let subTask of this.props.subTasks)
         {
-            if(!Actions.findOne({type: 'result', subTaskId: subTask._id, mainTaskId: this.props.task._id, adminUserId: this.props.adminUserId}))
-                return (<SimpleTask task={subTask} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
+            if(!Actions.findOne({type: 'result', subTaskId: subTask._id, attachId: this.props.attachId, mainTaskId: this.props.task._id, adminUserId: this.props.adminUserId}))
+                return (<SimpleTaskView task={subTask} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
         }
-        return (<SimpleTask task={null} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
+        return (<SimpleTaskView task={null} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
     }
 
     render() {

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
-import {StringInput, TextAreaInput, SelectFromTasks, SelectFromArray} from '/imports/ui/components/formInputFields';
+import {StringInput, TextAreaInput, SelectFromTasks, SelectFromArray, Checkbox} from '/imports/ui/components/formInputFields';
 import CompletionTypes from '/imports/ui/components/completionTypes';
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
@@ -29,6 +29,7 @@ export class SimpleTaskForm extends Component{
                 <StringInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index}  value={this.props.value['name']} name="name" callback={this.props.callback}/>
                 <SelectFromArray array={CompletionTypes.map((item) => item.label)} schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} callback={this.props.callback} value={this.props.value['type']} name="type"/>
                 <TextAreaInput schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value['description']} name="description" callback={this.props.callback}/>
+                <Checkbox schema={schema} prefix={this.props.prefix} id={this.props.id} index={this.props.index} value={this.props.value['notify']} name="notify" callback={this.props.callback}/>
             </div>
         )
     }

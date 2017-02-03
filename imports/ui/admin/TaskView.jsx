@@ -58,11 +58,12 @@ class TaskView extends Component{
 
     renderAttachedUsers(){
         let output = [];
+        let attachId;
         for(let user of this.props.users){
-            if(Actions.userIsAttachedByAdmin(user._id, this.props.task._id, Meteor.userId()))
+            if(attachId = Actions.userIsAttachedByAdmin(user._id, this.props.task._id, Meteor.userId()))
                 output.push(
                     <li key={user._id}>
-                        <a className="text-valign-center" href="/admin/tasks/">{user.profile.firstName + ' ' + user.profile.lastName}</a>
+                        <a className="text-valign-center" href={this.props.task._id + '/' + attachId}>{user.profile.firstName + ' ' + user.profile.lastName}</a>
                         <a className="unassign-user text-danger" onClick={() => this.userDeattach(user._id)}>
                             <i className="fa fa-2x fa-times text-valign-center"/>
                         </a>
@@ -72,6 +73,24 @@ class TaskView extends Component{
                         </a>
                     </li>
                 );
+        }
+        return output;
+    }
+
+    renderPrevious(){
+        let output = [];
+        let actions = Actions.find({mainTaskId: this.props.task._id, type: 'attach'}).fetch();
+
+        for(let attach of actions) {
+            if ( Actions.findOne({attachId: attach._id, type: 'deattach'}) ){
+                let user = Meteor.users.findOne(attach.userId);
+                output.push(
+                    <li key={user._id}>
+                        <a className="text-valign-center"
+                           href={this.props.task._id + '/' + attach._id}>{user.profile.firstName + ' ' + user.profile.lastName}</a>
+                    </li>
+                );
+            }
         }
         return output;
     }
@@ -114,6 +133,22 @@ class TaskView extends Component{
                         </ul>
                     </div>
                     <hr/>
+                    <div className="all-results">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">
+                                <h4 className="panel-title">
+                                    <a data-toggle="collapse" href="#collapse1">Previous results</a>
+                                </h4>
+                            </div>
+                            <div id='collapse1' className="panel-collapse collapse">
+                                <div className="panel-body">
+                                    <ul>
+                                        {this.renderPrevious()}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button className="btn btn-danger" onClick={() => Meteor.call('tasks.remove', this.props.task._id)}>Delete</button>
                 </div>
             );

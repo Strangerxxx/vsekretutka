@@ -123,6 +123,11 @@ Tasks.schema = new SimpleSchema({
             if(this.isInsert)
                 return new Date();
         }
+    },
+    notify: {
+        type: Boolean,
+        optional: true,
+        label: 'Notify me upon completion'
     }
 });
 
