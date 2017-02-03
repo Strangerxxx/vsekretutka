@@ -80,14 +80,15 @@ class TaskView extends Component{
     renderPrevious(){
         let output = [];
         let actions = Actions.find({mainTaskId: this.props.task._id, type: 'attach'}).fetch();
-
+        let deattach;
         for(let attach of actions) {
-            if ( Actions.findOne({attachId: attach._id, type: 'deattach'}) ){
+            if ( deattach = Actions.findOne({attachId: attach._id, type: 'deattach'}) ){
                 let user = Meteor.users.findOne(attach.userId);
                 output.push(
-                    <li key={user._id}>
-                        <a className="text-valign-center"
-                           href={this.props.task._id + '/' + attach._id}>{user.profile.firstName + ' ' + user.profile.lastName}</a>
+                    <li key={Random.id()}>
+                        <a className="text-valign-center" href={this.props.task._id + '/' + attach._id}>
+                            {user.profile.firstName + ' ' + user.profile.lastName + ' | ' + attach.createdAt.toLocaleDateString() + ' - ' + deattach.createdAt.toLocaleDateString()}
+                        </a>
                     </li>
                 );
             }

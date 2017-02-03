@@ -8,7 +8,7 @@ class ResultRow extends Component{
     render(){
         let action = this.props.action;
         return(
-            <tr>
+            <tr className={action.returned ? 'danger' : action.checked == null ? null : action.checked ? 'success' : 'warning'}>
                 <td>{action.createdAt}</td>
                 <td>{action.subTask ? action.subTask.name : '-'}</td>
                 <td>{action.action}</td>
