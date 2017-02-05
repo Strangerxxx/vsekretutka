@@ -10,7 +10,8 @@ export default class StringInput extends Component {
     }
 
     changeValue(event){
-        this.props.callback(this.props.name, event.target.value);
+        if(this.props.callback)
+            this.props.callback(this.props.name, event.target.value);
     }
 
     render() {

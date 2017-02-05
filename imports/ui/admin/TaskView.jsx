@@ -63,7 +63,7 @@ class TaskView extends Component{
             if(attachId = Actions.userIsAttachedByAdmin(user._id, this.props.task._id, Meteor.userId()))
                 output.push(
                     <li key={user._id}>
-                        <a className="text-valign-center" href={this.props.task._id + '/' + attachId}>{user.profile.firstName + ' ' + user.profile.lastName}</a>
+                        <a className="text-valign-center" href={'results/' + this.props.task._id + '/' + attachId}>{user.profile.firstName + ' ' + user.profile.lastName}</a>
                         <a className="unassign-user text-danger" onClick={() => this.userDeattach(user._id)}>
                             <i className="fa fa-2x fa-times text-valign-center"/>
                         </a>
@@ -86,7 +86,7 @@ class TaskView extends Component{
                 let user = Meteor.users.findOne(attach.userId);
                 output.push(
                     <li key={Random.id()}>
-                        <a className="text-valign-center" href={this.props.task._id + '/' + attach._id}>
+                        <a className="text-valign-center" href={'results/' + this.props.task._id + '/' + attach._id}>
                             {user.profile.firstName + ' ' + user.profile.lastName + ' | ' + attach.createdAt.toLocaleDateString() + ' - ' + deattach.createdAt.toLocaleDateString()}
                         </a>
                     </li>
@@ -107,7 +107,7 @@ class TaskView extends Component{
                 <div className="task-view">
                     <div className="task">
                         <article className="text-muted">{task.createdAt.toLocaleString()}</article>
-                        <a className="btn btn-default pull-right" href={task._id + "/edit"}>Edit</a>
+                        <a className="btn btn-default pull-right" href={"edit/" + task._id}>Edit</a>
                         <h2>{task.name}</h2>
                         <div className="description">
                             <span>{task.description}</span>

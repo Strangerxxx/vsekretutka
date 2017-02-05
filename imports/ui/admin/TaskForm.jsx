@@ -147,6 +147,7 @@ export default class TaskForm extends Component{
                             name: subTask.name,
                             description: subTask.description,
                             type: subTask.type,
+                            notify: subTask.notify
                         },
                         tasks: tasks,
                         error: null,
@@ -180,11 +181,12 @@ export default class TaskForm extends Component{
                 break;
 
             if(split[0] == 'subTasks'){
-                console.log(document)
                 if(document.subTasks[split[1]] == undefined)
                     document.subTasks.push({
                         _id: $('input[name="' + input.name + '"]').attr("id")
                     });
+                if(split[2] == 'notify')
+                    value = !!value;
                 document.subTasks[split[1]][split[2]] = value;
             }else{
                 document.main[input.name] = value;
@@ -194,10 +196,11 @@ export default class TaskForm extends Component{
 
         if(this.validate(document, schema)){
             if(!this.state.update)
-                Meteor.call('tasks.insert.main', document);
+                Meteor.call('tasks.insert.main', document, (error) => {
+                    console.log(error)
+                });
             else
                 Meteor.call('tasks.update.main', document);
-
         }
 
     }
@@ -300,8 +303,6 @@ export default class TaskForm extends Component{
             dropCallback: this.dropCallback,
         }));
     }
-
-
 
     filterTasks() {
         return this.props.tasks.filter((task) => (task.type == 'main'));

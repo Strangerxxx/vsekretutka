@@ -37,6 +37,7 @@ if(Meteor.isServer){
                     subTasks.push(task.select);
                 else
                     subTasks.push(Tasks.insert(task, (error) => {
+                        console.log(error)
                         if(error)
                             throw new Meteor.Error(error.sanitizedError.error, error.invalidKeys, doc.subTasks.indexOf(task));
                     }))
@@ -68,6 +69,7 @@ if(Meteor.isServer){
                             name: task.name,
                             description: task.description,
                             type: task.type,
+                            notify: !!task.notify,
                             createdAt: found.createdAt,
                         }}, (error) => {
                             console.log(error)
@@ -125,9 +127,9 @@ Tasks.schema = new SimpleSchema({
         }
     },
     notify: {
-        type: Boolean,
+        type: String,
         optional: true,
-        label: 'Notify me upon completion'
+        label: 'Notify upon completion'
     }
 });
 
