@@ -119,13 +119,6 @@ class UserTaskView extends Component{
 
     }
 
-    indexOfSubTaskId(id, subTasks){
-        for(let subTask of subTasks){
-            if(subTask._id == id)
-                return subTasks.indexOf(subTask);
-        }
-        return -1;
-    }
 
     render() {
         if(this.props.ready)
