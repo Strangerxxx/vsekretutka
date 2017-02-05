@@ -8,12 +8,25 @@ class SimpleTaskView extends Component{
     constructor(props){
         super(props);
         this.completionCallback = this.completionCallback.bind(this);
+        this.state = {
+            checked: null,
+        }
     }
 
     drawCompletionForm(){
+        if(this.props.checked == false)
+            return(<span className="text-primary">Result has been sent, please wait for approval.</span>);
         for(let type of CompletionTypes){
-            if(type.label == this.props.task.type)
+            if(type.label == this.props.task.type){
+                if(this.props.task.notify == 'true')
+                    return (
+                        <div>
+                            <span className="text-danger">Admin will be notified upon completion of this step.</span>
+                            <type.component callback={this.completionCallback}/>
+                        </div>
+                    );
                 return <type.component callback={this.completionCallback}/>;
+            }
         }
     }
 
@@ -55,24 +68,72 @@ class MainTaskView extends Component{
                     <span>{this.props.task.description}</span>
                 </div>
                 <hr/>
-                {this.drawActiveStep()}
+                {this.selectActiveStep()}
             </div>
         )
     }
 }
 
 class UserTaskView extends Component{
-    drawActiveStep() {
-        for (let subTask of this.props.subTasks)
-        {
-            if(!Actions.findOne({type: 'result', subTaskId: subTask._id, attachId: this.props.attachId, mainTaskId: this.props.task._id, adminUserId: this.props.adminUserId}))
-                return (<SimpleTaskView task={subTask} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
+    constructor(props){
+        super(props);
+        this.state = {
+            activeStep: null,
+            checked: null,
         }
-        return (<SimpleTaskView task={null} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>)
+    }
+
+    componentWillReceiveProps(props){
+        if(props.ready){
+            this.state.activeStep = null;
+            this.selectActiveStep(props);
+        }
+    }
+
+    selectActiveStep(props) {
+        let activeStep;
+        if(props.actions = [])
+            activeStep = props.subTasks[0];
+
+        for(let action of props.actions){
+            switch(action.type){
+                case 'result':
+                    if(props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks)].notify == 'true')
+                        this.state.checked = false;
+                    else
+                    {
+                        activeStep = props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks) + 1];
+                        this.state.checked = null;
+                    }
+                    break;
+                case 'continue':
+                    this.state.checked = null;
+                    activeStep = props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks) + 1];
+                    break;
+                case 'return':
+                    activeStep = props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks)];
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        this.state.activeStep = activeStep;
+        this.forceUpdate();
+
+    }
+
+    indexOfSubTaskId(id, subTasks){
+        for(let subTask of subTasks){
+            if(subTask._id == id)
+                return subTasks.indexOf(subTask);
+        }
+        return -1;
     }
 
     render() {
         if(this.props.ready)
+        {
             return(
                 <div className="userTaskView">
                     <h2>{this.props.task.name}</h2>
@@ -80,9 +141,10 @@ class UserTaskView extends Component{
                         <span>{this.props.task.description}</span>
                     </div>
                     <hr/>
-                    {this.drawActiveStep()}
+                    <SimpleTaskView task={this.state.activeStep} checked={this.state.checked} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>
                 </div>
             );
+        }
         else
             return (
                 <span>Loading...</span>
@@ -103,7 +165,7 @@ export default createContainer(({params}) => {
         subTasks.sort((a, b) => {
             return order[a._id] - order[b._id];
         });
-        actions = Actions.find({mainTaskId: task._id, adminUserId: params.adminId}).fetch();
+        actions = Actions.find({mainTaskId: task._id, attachId: params.attachId}).fetch();
     }
 
     return {

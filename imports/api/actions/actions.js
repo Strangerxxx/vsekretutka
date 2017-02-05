@@ -95,13 +95,14 @@ if(Meteor.isServer) {
                     throw new Meteor.Error(userId + ' does not have this task attached: ' + mainTaskId);
 
         },
-        'actions.continue': (userId, mainTaskId, adminUserId, subTaskId, message) => {
+        'actions.continue': (userId, mainTaskId, adminUserId, subTaskId, attachId, message) => {
             Actions.insert({
                 userId,
                 mainTaskId,
                 adminUserId,
                 subTaskId,
                 message,
+                attachId,
                 type: 'continue'
             })
         }

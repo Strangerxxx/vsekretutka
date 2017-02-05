@@ -5,6 +5,14 @@ import Actions from '/imports/api/actions/actions';
 import Tasks from '/imports/api/tasks/tasks';
 
 class ResultRow extends Component{
+    constructor(props){
+        super(props);
+        this.buttonContinue = this.buttonContinue.bind(this);
+    }
+    buttonContinue(){
+        Meteor.call('actions.continue', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId);
+    }
+
     render(){
         let action = this.props.action;
         return(
@@ -14,7 +22,7 @@ class ResultRow extends Component{
                 <td>{action.action}</td>
                 <td>{action.result}</td>
                 <td>{action.message}</td>
-                <td>ACTIONS</td>
+                <td><button onClick={this.buttonContinue} className='btn btn-primary'>Continue</button></td>
             </tr>
         )
     }
@@ -42,17 +50,21 @@ class Results extends Component{
             switch(action.type){
                 case 'result':
                     actions.push({
+                        attachId: action.attachId,
                         id: Random.id(),
+                        userId: action.userId,
+                        mainTask: props.task,
                         createdAt: action.createdAt.toLocaleString(),
                         result: action.result.value,
                         subTask,
                         action: 'Result',
-                        checked: subTask.notify ? false : null,
+                        checked: subTask.notify == 'true' ? false : null,
                         returned: false,
                     });
                     break;
                 case 'return':
                     actions.push({
+                        attachId: action.attachId,
                         id: Random.id(),
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
@@ -63,16 +75,19 @@ class Results extends Component{
                     break;
                 case 'continue':
                     actions.push({
+                        attachId: action.attachId,
                         id: Random.id(),
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
                         action: 'Continue',
                         message: action.message,
                     });
+                    let lior = this.lastIndexOfResults(subTask);
                     actions[this.lastIndexOfResults(subTask)].checked = true;
                     break;
                 case 'deattach':
                     actions.push({
+                        attachId: action.attachId,
                         id: Random.id(),
                         createdAt: action.createdAt.toLocaleString(),
                         action: 'End',
@@ -84,8 +99,8 @@ class Results extends Component{
 
     lastIndexOfResults(subTask){
         let results = this.state.actions;
-        for(let i = results.length-1; i <= 0; i--){
-            if(results[i].subTask == subTask && results[1].action == 'Result')
+        for(let i = results.length-1; i >= 0; i--){
+            if(results[i].subTask.toString() == subTask.toString() && results[i].action == 'Result')
                 return i;
         }
         return -1;
@@ -142,6 +157,7 @@ export default createContainer(({params}) => {
         task,
         subTasks,
         user,
-        actions
+        actions,
+        attachId: params.attachId,
     }
 }, Results)

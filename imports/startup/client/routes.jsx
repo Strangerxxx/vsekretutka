@@ -33,7 +33,7 @@ Meteor.startup( () => {
                     <Route path='test/file' components={{main: TestFileUpload}}/>
                 </Route>
                 <Route path="/" components={{main: UserIndex, navigation: UserTaskList}}>
-                    <Route path={'tasks/:taskId/:adminId'} components={{main: UserTaskView}}/>
+                    <Route path={'tasks/:taskId/:attachId'} components={{main: UserTaskView}}/>
                 </Route>
             </Route>
         </Router>,
