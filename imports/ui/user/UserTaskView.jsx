@@ -92,41 +92,26 @@ class UserTaskView extends Component{
 
     selectActiveStep(props) {
         let activeStep = null;
-        if(props.actions = [])
-            activeStep = props.subTasks[0];
 
-        for(let action of props.actions){
-            switch(action.type){
-                case 'result':
-                    if(props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks)].notify == 'true')
-                        this.state.checked = false;
-                    else
-                    {
-                        this.state.checked = null;
-                        for(let subTask of props.subTasks)
-                        {
-                            let actions = Actions.find({subTaskId: subTask._id, attachId: props.attachId}).fetch();
-                            console.log(actions)
-                            if(actions.length == 0)
-                                activeStep = subTask;
-                            else if(actions[actions.length-1].type == 'return')
-                            {
-                                activeStep = subTask;
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                case 'continue':
-                    this.state.checked = null;
-                    activeStep = props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks) + 1];
-                    break;
-                case 'return':
-                    activeStep = props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks)];
-                    break;
-                default:
-                    break;
+        for(let subTask of props.subTasks){
+            let actions = Actions.find({subTaskId: subTask._id, attachId: props.attachId}).fetch();
+            if(this.state.checked == false)
+                this.state.checked = true;
+            if(actions.length == 0){
+                activeStep = subTask;
+                break;
             }
+            else if(actions[actions.length-1].type == 'return')
+            {
+                activeStep = subTask;
+                break;
+            }
+            else if(subTask.notify == 'true' && actions[actions.length-1].type == 'result'){
+                activeStep = subTask;
+                this.state.checked = false;
+                break;
+            }
+
         }
 
         this.state.activeStep = activeStep;

@@ -12,11 +12,11 @@ class ResultRow extends Component{
     }
 
     buttonContinue(){
-        Meteor.call('actions.continue', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId);
+        Meteor.call('actions.continue', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId, this.props.action.id);
     }
 
     buttonReturn(){
-        Meteor.call('actions.return', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId)
+        Meteor.call('actions.return', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId, this.props.action.id)
     }
 
     render() {
@@ -25,10 +25,10 @@ class ResultRow extends Component{
         if (action.action == 'Result'){
             if (action.checked != true && action.subTask.notify == 'true')
                 buttons.push(
-                    <button onClick={this.buttonContinue} className='btn btn-primary'>Continue</button>
+                    <button onClick={this.buttonContinue} key={Random.id()} className='btn btn-primary'>Continue</button>
                 );
             buttons.push(
-                <button onClick={this.buttonReturn} className='btn btn-primary'>Return</button>
+                <button onClick={this.buttonReturn} key={Random.id()} className='btn btn-primary'>Return</button>
             )
         }
         return(
@@ -67,7 +67,7 @@ class Results extends Component{
                 case 'result':
                     actions.push({
                         attachId: action.attachId,
-                        id: Random.id(),
+                        id: action._id,
                         userId: action.userId,
                         mainTask: props.task,
                         createdAt: action.createdAt.toLocaleString(),
@@ -81,30 +81,29 @@ class Results extends Component{
                 case 'return':
                     actions.push({
                         attachId: action.attachId,
-                        id: Random.id(),
+                        id: action._id,
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
                         action: 'Return',
                         message: action.message,
                     });
-                    actions[this.lastIndexOfResults(subTask)].returned = true;
+                    actions[this.getIndexById(action.resultId)].returned = true;
                     break;
                 case 'continue':
                     actions.push({
                         attachId: action.attachId,
-                        id: Random.id(),
+                        id: action._id,
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
                         action: 'Continue',
                         message: action.message,
                     });
-                    let lior = this.lastIndexOfResults(subTask);
-                    actions[this.lastIndexOfResults(subTask)].checked = true;
+                    actions[this.getIndexById(action.resultId)].checked = true;
                     break;
                 case 'deattach':
                     actions.push({
                         attachId: action.attachId,
-                        id: Random.id(),
+                        id: action._id,
                         createdAt: action.createdAt.toLocaleString(),
                         action: 'End',
                     })
@@ -113,11 +112,11 @@ class Results extends Component{
         this.forceUpdate();
     }
 
-    lastIndexOfResults(subTask){
-        let results = this.state.actions;
-        for(let i = results.length-1; i >= 0; i--){
-            if(results[i].subTask.toString() == subTask.toString() && results[i].action == 'Result')
-                return i;
+    getIndexById(id){
+        let localActions = this.state.actions;
+        for(let action of localActions){
+            if(action.id == id)
+                return localActions.indexOf(action);
         }
         return -1;
     }

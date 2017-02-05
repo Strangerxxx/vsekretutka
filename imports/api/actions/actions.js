@@ -61,7 +61,7 @@ if(Meteor.isServer) {
                 type: 'result'
             });
         },
-        'actions.return': (userId, mainTaskId, adminUserId, subTaskId, attachId, message) => {
+        'actions.return': (userId, mainTaskId, adminUserId, subTaskId, attachId, resultId, message) => {
             Actions.insert({
                 userId,
                 mainTaskId,
@@ -69,6 +69,7 @@ if(Meteor.isServer) {
                 subTaskId,
                 message,
                 attachId,
+                resultId,
                 type: 'return'
             });
         },
@@ -96,7 +97,7 @@ if(Meteor.isServer) {
                     throw new Meteor.Error(userId + ' does not have this task attached: ' + mainTaskId);
 
         },
-        'actions.continue': (userId, mainTaskId, adminUserId, subTaskId, attachId, message) => {
+        'actions.continue': (userId, mainTaskId, adminUserId, subTaskId, attachId, resultId, message) => {
             Actions.insert({
                 userId,
                 mainTaskId,
@@ -104,6 +105,7 @@ if(Meteor.isServer) {
                 subTaskId,
                 message,
                 attachId,
+                resultId,
                 type: 'continue'
             })
         }
@@ -151,6 +153,10 @@ Actions.schema = new SimpleSchema({
         blackbox: true
     },
     attachId: {
+        type: Actions,
+        optional: true,
+    },
+    resultId: {
         type: Actions,
         optional: true,
     }
