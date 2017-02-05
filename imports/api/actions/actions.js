@@ -61,13 +61,14 @@ if(Meteor.isServer) {
                 type: 'result'
             });
         },
-        'actions.return': (userId, mainTaskId, adminUserId, subTaskId, message) => {
+        'actions.return': (userId, mainTaskId, adminUserId, subTaskId, attachId, message) => {
             Actions.insert({
                 userId,
                 mainTaskId,
                 adminUserId,
                 subTaskId,
                 message,
+                attachId,
                 type: 'return'
             });
         },

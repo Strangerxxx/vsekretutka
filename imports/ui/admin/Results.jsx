@@ -8,13 +8,29 @@ class ResultRow extends Component{
     constructor(props){
         super(props);
         this.buttonContinue = this.buttonContinue.bind(this);
+        this.buttonReturn = this.buttonReturn.bind(this);
     }
+
     buttonContinue(){
         Meteor.call('actions.continue', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId);
     }
 
-    render(){
+    buttonReturn(){
+        Meteor.call('actions.return', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId)
+    }
+
+    render() {
         let action = this.props.action;
+        let buttons = [];
+        if (action.action == 'Result'){
+            if (action.checked != true && action.subTask.notify == 'true')
+                buttons.push(
+                    <button onClick={this.buttonContinue} className='btn btn-primary'>Continue</button>
+                );
+            buttons.push(
+                <button onClick={this.buttonReturn} className='btn btn-primary'>Return</button>
+            )
+        }
         return(
             <tr className={action.returned ? 'danger' : action.checked == null ? null : action.checked ? 'success' : 'warning'}>
                 <td>{action.createdAt}</td>
@@ -22,7 +38,7 @@ class ResultRow extends Component{
                 <td>{action.action}</td>
                 <td>{action.result}</td>
                 <td>{action.message}</td>
-                <td><button onClick={this.buttonContinue} className='btn btn-primary'>Continue</button></td>
+                <td>{buttons}</td>
             </tr>
         )
     }

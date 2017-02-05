@@ -91,7 +91,7 @@ class UserTaskView extends Component{
     }
 
     selectActiveStep(props) {
-        let activeStep;
+        let activeStep = null;
         if(props.actions = [])
             activeStep = props.subTasks[0];
 
@@ -102,8 +102,19 @@ class UserTaskView extends Component{
                         this.state.checked = false;
                     else
                     {
-                        activeStep = props.subTasks[this.indexOfSubTaskId(action.subTaskId, props.subTasks) + 1];
                         this.state.checked = null;
+                        for(let subTask of props.subTasks)
+                        {
+                            let actions = Actions.find({subTaskId: subTask._id, attachId: props.attachId}).fetch();
+                            console.log(actions)
+                            if(actions.length == 0)
+                                activeStep = subTask;
+                            else if(actions[actions.length-1].type == 'return')
+                            {
+                                activeStep = subTask;
+                                break;
+                            }
+                        }
                     }
                     break;
                 case 'continue':
@@ -175,5 +186,6 @@ export default createContainer(({params}) => {
         attachId: Actions.userIsAttached(Meteor.userId(), params.taskId),
         adminUserId: params.adminId,
         actions,
+        attachId: params.attachId,
     }
 }, UserTaskView);
