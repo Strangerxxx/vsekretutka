@@ -25,7 +25,7 @@ class SimpleTaskView extends Component{
 class TaskView extends Component{
     constructor(props){
         super(props);
-        this.userAttachSubmit = this.userAttachSubmit.bind(this);
+        this.userAttach = this.userAttach.bind(this);
         this.userSelectCallback = this.userSelectCallback.bind(this);
         this.state =  {
             selectValue: 0,
@@ -44,7 +44,7 @@ class TaskView extends Component{
         return output;
     }
 
-    userAttachSubmit(event){
+    userAttach(event){
         event.preventDefault();
         let form = $(event.target).serializeArray();
         if(form[0].value != 0)
@@ -79,11 +79,11 @@ class TaskView extends Component{
 
     renderPrevious(){
         let output = [];
-        let actions = Actions.find({mainTaskId: this.props.task._id, type: 'attach'}).fetch();
+        let actions = Actions.find({'data.mainTaskId': this.props.task._id, type: 'attach'}).fetch();
         let deattach;
         for(let attach of actions) {
-            if ( deattach = Actions.findOne({attachId: attach._id, type: 'deattach'}) ){
-                let user = Meteor.users.findOne(attach.userId);
+            if ( deattach = Actions.findOne({'data.attachId': attach._id, type: 'deattach'}) ){
+                let user = Meteor.users.findOne(attach.data.userId);
                 output.push(
                     <li key={Random.id()}>
                         <a className="text-valign-center" href={'results/' + this.props.task._id + '/' + attach._id}>
@@ -121,7 +121,7 @@ class TaskView extends Component{
                     </div>
                     <hr/>
                     <div className="users-attach-form">
-                        <form onSubmit={this.userAttachSubmit}>
+                        <form onSubmit={this.userAttach}>
                             <SelectFromUsers selectCallback={this.userSelectCallback} users={this.props.users} value={this.state.selectValue} className="user-select" name="selectUser"/>
                             <button type="Submit" className="btn btn-default">Attach</button>
                         </form>

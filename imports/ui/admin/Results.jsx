@@ -62,16 +62,16 @@ class Results extends Component{
     fillResults(props){
         let actions = this.state.actions;
         for(let action of props.actions){
-            let subTask = Tasks.findOne(action.subTaskId);
+            let subTask = Tasks.findOne(action.data.subTaskId);
             switch(action.type){
                 case 'result':
                     actions.push({
-                        attachId: action.attachId,
+                        attachId: action.data.attachId,
                         id: action._id,
                         userId: action.userId,
                         mainTask: props.task,
                         createdAt: action.createdAt.toLocaleString(),
-                        result: action.result.value,
+                        result: action.data.result.value,
                         subTask,
                         action: 'Result',
                         checked: subTask.notify == 'true' ? false : null,
@@ -80,14 +80,14 @@ class Results extends Component{
                     break;
                 case 'return':
                     actions.push({
-                        attachId: action.attachId,
+                        attachId: action.data.attachId,
                         id: action._id,
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
                         action: 'Return',
-                        message: action.message,
+                        message: action.data.message,
                     });
-                    actions[this.getIndexById(action.resultId)].returned = true;
+                    actions[this.getIndexById(action.data.resultId)].returned = true;
                     break;
                 case 'continue':
                     actions.push({
@@ -96,9 +96,9 @@ class Results extends Component{
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
                         action: 'Continue',
-                        message: action.message,
+                        message: action.data.message,
                     });
-                    actions[this.getIndexById(action.resultId)].checked = true;
+                    actions[this.getIndexById(action.data.resultId)].checked = true;
                     break;
                 case 'deattach':
                     actions.push({
@@ -161,8 +161,8 @@ export default createContainer(({params}) => {
     let usersHandle = Meteor.subscribe('users', Meteor.userId());
     let actions, task, subTasks, user;
     if(actionsHandle.ready() && tasksHandle.ready() && usersHandle.ready()){
-        user = Meteor.users.findOne({_id: Actions.findOne(params.attachId).userId});
-        actions = Actions.find({attachId: params.attachId}).fetch();
+        user = Meteor.users.findOne({_id: Actions.findOne(params.attachId).data.userId});
+        actions = Actions.find({'data.attachId': params.attachId}).fetch();
         task = Tasks.findOne(params.taskId);
         subTasks = Tasks.find({id: {$in : task.subTasks}}).fetch();
     }

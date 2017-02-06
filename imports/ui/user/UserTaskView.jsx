@@ -94,7 +94,7 @@ class UserTaskView extends Component{
         let activeStep = null;
 
         for(let subTask of props.subTasks){
-            let actions = Actions.find({subTaskId: subTask._id, attachId: props.attachId}).fetch();
+            let actions = Actions.find({'data.subTaskId': subTask._id, 'data.attachId': props.attachId}).fetch();
             if(this.state.checked == false)
                 this.state.checked = true;
             if(actions.length == 0){
@@ -154,7 +154,7 @@ export default createContainer(({params}) => {
         subTasks.sort((a, b) => {
             return order[a._id] - order[b._id];
         });
-        actions = Actions.find({mainTaskId: task._id, attachId: params.attachId}).fetch();
+        actions = Actions.find({'data.mainTaskId': task._id, 'data.attachId': params.attachId}).fetch();
     }
 
     return {

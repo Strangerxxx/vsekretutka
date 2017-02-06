@@ -16,7 +16,7 @@ if(Meteor.isServer){
             return Tasks.find({_id: {
                 $in: Actions.find(
                     {_id: { $in: Meteor.users.findOne(userId).profile.attachIds
-                }}).map((item) => item.mainTaskId)
+                }}).map((item) => item.data.mainTaskId)
             }});
         }
     });

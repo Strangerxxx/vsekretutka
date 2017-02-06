@@ -5,15 +5,15 @@ import Tasks from '../tasks/tasks';
 Actions = new Meteor.Collection('actions');
 
 Actions.userIsAttachedByAdmin = (userId, mainTaskId, adminUserId) => {
-    let attachActions = Actions.find({userId, mainTaskId, adminUserId, type: 'attach'}).fetch();
+    let attachActions = Actions.find({userId : adminUserId, 'data.mainTaskId': mainTaskId, 'data.userId': userId, type: 'attach'}).fetch();
     if(!attachActions.length)
         return false;
     let lastAttachActionId = attachActions[attachActions.length-1]._id;
-    return ( !Actions.findOne({attachId: lastAttachActionId, type: 'deattach'}) ) ? lastAttachActionId : false ;
+    return ( !Actions.findOne({'data.attachId': lastAttachActionId, type: 'deattach'}) ) ? lastAttachActionId : false ;
 };
 
 Actions.userIsAttached = (userId, mainTaskId) => {
-    let attachActions = Actions.find({userId, mainTaskId, type: 'attach'}).fetch();
+    let attachActions = Actions.find({'data.userId': userId, 'data.mainTaskId': mainTaskId, type: 'attach'}).fetch();
     if(!attachActions.length)
         return false;
     let lastAttachActionId = attachActions[attachActions.length-1]._id;
@@ -23,11 +23,11 @@ Actions.userIsAttached = (userId, mainTaskId) => {
 if(Meteor.isServer) {
     Meteor.publish('actions.user', (userId) => {
         if(userId)
-            return Actions.find({userId});
+            return Actions.find({$or : [ {userId: userId}, {'data.userId': userId} ] });
     });
     Meteor.publish('actions.admin', (userId) => {
         if(Roles.userIsInRole(userId, 'admin'))
-            return Actions.find({adminUserId: userId});
+            return Actions.find({ $or : [ {userId: userId}, {'data.adminUserId': userId} ] });
     });
 
     Meteor.methods({
@@ -35,10 +35,12 @@ if(Meteor.isServer) {
             if(Roles.userIsInRole(adminUserId, 'admin')){
                  if(!Actions.userIsAttachedByAdmin(userId, mainTaskId, adminUserId))
                     Actions.insert({
-                        userId,
-                        adminUserId,
-                        mainTaskId,
+                        userId: adminUserId,
                         type: 'attach',
+                        data: {
+                            mainTaskId,
+                            userId,
+                        }
                     }, (error, result) => {
                      if(!error)
                          Meteor.users.update(userId, {$push: {'profile.attachIds': result}});
@@ -49,41 +51,46 @@ if(Meteor.isServer) {
             }
         },
         'actions.result': (userId, mainTaskId, subTaskId, result, attachId) => {
-            console.log(result)
-            let adminUserId = Actions.findOne(attachId).adminUserId;
+            let adminUserId = Actions.findOne(attachId).userId;
             Actions.insert({
                 userId,
-                mainTaskId,
-                adminUserId,
-                subTaskId,
-                result,
-                attachId,
-                type: 'result'
+                type: 'result',
+                data: {
+                    mainTaskId,
+                    adminUserId,
+                    subTaskId,
+                    result,
+                    attachId,
+                },
             });
         },
         'actions.return': (userId, mainTaskId, adminUserId, subTaskId, attachId, resultId, message) => {
             Actions.insert({
-                userId,
-                mainTaskId,
-                adminUserId,
-                subTaskId,
-                message,
-                attachId,
-                resultId,
-                type: 'return'
+                userId: adminUserId,
+                type: 'return',
+                data: {
+                    mainTaskId,
+                    userId,
+                    subTaskId,
+                    message,
+                    attachId,
+                    resultId,
+                },
             });
         },
         'actions.deattach': (userId, adminUserId, mainTaskId) => {
             let attachId;
             if(Roles.userIsInRole(adminUserId, 'admin'))
                 if(attachId = Actions.userIsAttachedByAdmin(userId, mainTaskId, adminUserId))
-                    if(Actions.find({attachId, type: {$ne: 'attach'}}).fetch().length != 0)
+                    if(Actions.find({'data.attachId' : attachId, type: {$ne: 'attach'}}).fetch().length != 0)
                         Actions.insert({
-                            userId,
-                            mainTaskId,
-                            adminUserId,
-                            attachId,
+                            userId: adminUserId,
                             type: 'deattach',
+                            data: {
+                                mainTaskId,
+                                userId,
+                                attachId,
+                            },
                         }, (error) => {
                             if(!error)
                                 Meteor.users.update(userId, {$pull: {'profile.attachIds': attachId}})
@@ -99,21 +106,23 @@ if(Meteor.isServer) {
         },
         'actions.continue': (userId, mainTaskId, adminUserId, subTaskId, attachId, resultId, message) => {
             Actions.insert({
-                userId,
-                mainTaskId,
-                adminUserId,
-                subTaskId,
-                message,
-                attachId,
-                resultId,
-                type: 'continue'
+                userId: adminUserId,
+                type: 'continue',
+                data: {
+                    mainTaskId,
+                    userId,
+                    subTaskId,
+                    message,
+                    attachId,
+                    resultId,
+                },
             })
         }
 
     });
 }
 
-Actions.schema = new SimpleSchema({
+schema = new SimpleSchema({
     createdAt: {
         type: Date,
         autoValue() {
@@ -159,6 +168,32 @@ Actions.schema = new SimpleSchema({
     resultId: {
         type: Actions,
         optional: true,
+    }
+});
+
+Actions.schema = new SimpleSchema({
+    createdAt: {
+        type: Date,
+        autoValue() {
+            return new Date();
+        },
+    },
+    userId : {
+        type: Meteor.users,
+    },
+    type: {
+        type: String,
+        allowedValues: [
+            'attach',
+            'result',
+            'return',
+            'deattach',
+            'continue',
+        ]
+    },
+    data: {
+        type: Object,
+        blackbox: true,
     }
 });
 
