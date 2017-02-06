@@ -30,9 +30,9 @@ class SimpleTaskView extends Component{
         }
     }
 
-    completionCallback(value){
-        if(value)
-            Meteor.call('actions.result', Meteor.userId(), this.props.mainTaskId, this.props.task._id, {value}, this.props.attachId);
+    completionCallback(result){
+        if(result)
+            Meteor.call('actions.result', Meteor.userId(), this.props.mainTaskId, this.props.task._id, result, this.props.attachId);
     }
 
     render(){

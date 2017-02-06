@@ -9,7 +9,7 @@ export default CompletionTypeText = {
         }
         submitForm(event){
             event.preventDefault();
-            this.props.callback($(event.target).serializeArray()[0].value);
+            this.props.callback({type: 'Text', value: $(event.target).serializeArray()[0].value});
         }
 
         render() {

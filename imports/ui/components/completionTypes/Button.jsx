@@ -5,7 +5,7 @@ export default CompletionTypeButton = {
     component: class Button extends Component{
         render() {
             return(
-                <button className="btn btn-primary" onClick={() => this.props.callback('Completed')}>Done</button>
+                <button className="btn btn-primary" onClick={() => this.props.callback({type: 'Button'})}>Done</button>
             )
         }
     }

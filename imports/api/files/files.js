@@ -6,12 +6,12 @@ export default Files = new FS.Collection("files", {
 
 if(Meteor.isServer){
     Files.allow({
-        'insert': function (userId) {
-            return !!userId;
+        'insert': (userId) => !!userId,
+        download: (userId) => {
+            if(Roles.userIsInRole(userId, 'admin'))
+                return !!userId;
         },
-        download: function(userId, fileObj) {
-            return true
-        }
+        update: (userId) => !!userId,
     });
     Meteor.publish('files', () => {
         return Files.find();

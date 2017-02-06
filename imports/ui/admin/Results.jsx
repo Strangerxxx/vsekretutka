@@ -3,6 +3,7 @@ import { createContainer } from 'meteor/react-meteor-data'
 import { Meteor } from 'meteor/meteor';
 import Actions from '/imports/api/actions/actions';
 import Tasks from '/imports/api/tasks/tasks';
+import Files from '/imports/api/files/files';
 
 class ResultRow extends Component{
     constructor(props){
@@ -25,7 +26,7 @@ class ResultRow extends Component{
         };
         if(message)
             bootbox.prompt({
-                title: "Please write a message for user",
+                title: "Please leave a comment to Your action",
                 inputType: 'textarea',
                 callback: (result) => {
                     if(result != null && result != '')
@@ -49,7 +50,7 @@ class ResultRow extends Component{
             );
         };
         bootbox.prompt({
-            title: "Please write a message for user",
+            title: "Please leave a comment to Your action",
             inputType: 'textarea',
             callback: (result) => {
                 if(result != null && result != '')
@@ -60,7 +61,7 @@ class ResultRow extends Component{
 
     render() {
         let action = this.props.action;
-        let buttons = [];
+        let buttons = [], result = action.result;
         let user = Meteor.users.findOne(action.userId);
         if (action.action == 'Result' && this.props.ongoing){
             if (action.checked != true && action.subTask.notify == 'true')
@@ -70,8 +71,8 @@ class ResultRow extends Component{
                             <i className="fa fa-play"/> <i className="fa fa-caret-up"/>
                         </button>
                         <ul className="dropdown-menu dropdown-menu-right">
-                            <li><a className="dropdown-item" href="#" onClick={this.buttonContinue}>Simple</a></li>
-                            <li><a className="dropdown-item" href="#" onClick={() => this.buttonContinue(true)}>With message</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={() => this.buttonContinue(false)}>Simple</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={this.buttonContinue}>With message</a></li>
                         </ul>
                     </div>
                 );
@@ -79,13 +80,39 @@ class ResultRow extends Component{
                 <button onClick={this.buttonReturn} key={Random.id()} className='btn btn-danger'><i className="fa fa-step-backward"/></button>
             )
         }
+
+        if(result && result.type == 'File'){
+            let fileObj = Files.findOne(result.value);
+            if(fileObj)
+            {
+                let type = fileObj.original.type.split('/');
+                if(type[0] == 'image')
+                {
+                    result.value = (
+                        <span>
+                            <a
+                                href="#"
+                                onClick={() => bootbox.alert({
+                                    title: fileObj.original.name,
+                                    size: 'large',
+                                    message: "<a href=" + fileObj.url() + "><img class='fit-in-div' src=" + fileObj.url() + "/></a>",
+                                })}
+                            >Image</a>
+                        </span>
+                    );
+                }
+                else
+                    result.value = (<a href={fileObj.url()}>File</a>);
+            }
+        }
         return(
             <tr className={action.returned ? 'danger' : action.checked == null ? null : action.checked ? 'success' : 'warning'}>
                 <td className="created-at">{action.createdAt}</td>
                 <td>{action.subTask ? action.subTask.name : '-'}</td>
                 <td>{user.profile.firstName + ' ' + user.profile.lastName} {Roles.userIsInRole(action.userId, 'admin') ? '(admin)' : null}</td>
                 <td>{action.action}</td>
-                <td>{action.result}</td>
+                <td>{(result = action.result) ? result.type : '-'}</td>
+                <td>{(result = action.result) ? result.value : '-'}</td>
                 <td>{action.message}</td>
                 <td><div className="btn-group">{buttons}</div></td>
             </tr>
@@ -122,7 +149,7 @@ class Results extends Component{
                         userId: action.userId,
                         mainTask: props.task,
                         createdAt: action.createdAt.toLocaleString(),
-                        result: action.data.result.value,
+                        result: action.data.result,
                         subTask,
                         action: 'Result',
                         checked: subTask.notify == 'true' ? false : null,
@@ -160,7 +187,7 @@ class Results extends Component{
                         userId: action.userId,
                         createdAt: action.createdAt.toLocaleString(),
                         action: 'End',
-                    })
+                    });
                     this.state.ongoing = false;
             }
         }
@@ -195,6 +222,7 @@ class Results extends Component{
                                 <th>Step Name</th>
                                 <th>By</th>
                                 <th>Action</th>
+                                <th>Task Type</th>
                                 <th>Result</th>
                                 <th>Message</th>
                                 <th>Actions</th>
@@ -223,6 +251,7 @@ export default createContainer(({params}) => {
         task = Tasks.findOne(params.taskId);
         subTasks = Tasks.find({id: {$in : task.subTasks}}).fetch();
     }
+    Meteor.subscribe('files');
 
     return{
         ready: actionsHandle.ready() && tasksHandle.ready() && usersHandle.ready(),
