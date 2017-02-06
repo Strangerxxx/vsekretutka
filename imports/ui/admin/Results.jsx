@@ -11,34 +11,83 @@ class ResultRow extends Component{
         this.buttonReturn = this.buttonReturn.bind(this);
     }
 
-    buttonContinue(){
-        Meteor.call('actions.continue', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId, this.props.action.id);
+    buttonContinue(message){
+        let continueAction = (result) => {
+            Meteor.call(
+                'actions.continue',
+                this.props.action.userId,
+                this.props.action.mainTask._id, Meteor.userId(),
+                this.props.action.subTask._id,
+                this.props.action.attachId,
+                this.props.action.id,
+                result
+            );
+        };
+        if(message)
+            bootbox.prompt({
+                title: "Please write a message for user",
+                inputType: 'textarea',
+                callback: (result) => {
+                    if(result != null && result != '')
+                        continueAction(result);
+                }
+            });
+        else(continueAction());
     }
 
     buttonReturn(){
-        Meteor.call('actions.return', this.props.action.userId, this.props.action.mainTask._id, Meteor.userId(), this.props.action.subTask._id, this.props.action.attachId, this.props.action.id)
+        let returnAction = (result) => {
+            Meteor.call(
+                'actions.return',
+                this.props.action.userId,
+                this.props.action.mainTask._id,
+                Meteor.userId(),
+                this.props.action.subTask._id,
+                this.props.action.attachId,
+                this.props.action.id,
+                result
+            );
+        };
+        bootbox.prompt({
+            title: "Please write a message for user",
+            inputType: 'textarea',
+            callback: (result) => {
+                if(result != null && result != '')
+                    returnAction(result);
+            }
+        });
     }
 
     render() {
         let action = this.props.action;
         let buttons = [];
-        if (action.action == 'Result'){
+        let user = Meteor.users.findOne(action.userId);
+        if (action.action == 'Result' && this.props.ongoing){
             if (action.checked != true && action.subTask.notify == 'true')
                 buttons.push(
-                    <button onClick={this.buttonContinue} key={Random.id()} className='btn btn-primary'>Continue</button>
+                    <div key={Random.id()} className="btn-group dropup">
+                        <button type="button" className="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i className="fa fa-play"/> <i className="fa fa-caret-up"/>
+                        </button>
+                        <ul className="dropdown-menu dropdown-menu-right">
+                            <li><a className="dropdown-item" href="#" onClick={this.buttonContinue}>Simple</a></li>
+                            <li><a className="dropdown-item" href="#" onClick={() => this.buttonContinue(true)}>With message</a></li>
+                        </ul>
+                    </div>
                 );
             buttons.push(
-                <button onClick={this.buttonReturn} key={Random.id()} className='btn btn-primary'>Return</button>
+                <button onClick={this.buttonReturn} key={Random.id()} className='btn btn-danger'><i className="fa fa-step-backward"/></button>
             )
         }
         return(
             <tr className={action.returned ? 'danger' : action.checked == null ? null : action.checked ? 'success' : 'warning'}>
-                <td>{action.createdAt}</td>
+                <td className="created-at">{action.createdAt}</td>
                 <td>{action.subTask ? action.subTask.name : '-'}</td>
+                <td>{user.profile.firstName + ' ' + user.profile.lastName} {Roles.userIsInRole(action.userId, 'admin') ? '(admin)' : null}</td>
                 <td>{action.action}</td>
                 <td>{action.result}</td>
                 <td>{action.message}</td>
-                <td>{buttons}</td>
+                <td><div className="btn-group">{buttons}</div></td>
             </tr>
         )
     }
@@ -49,6 +98,8 @@ class Results extends Component{
         super(props);
         this.state = {
             actions: [],
+            ongoing: true,
+            modalOpen: false,
         }
     }
 
@@ -82,6 +133,7 @@ class Results extends Component{
                     actions.push({
                         attachId: action.data.attachId,
                         id: action._id,
+                        userId: action.userId,
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
                         action: 'Return',
@@ -93,6 +145,7 @@ class Results extends Component{
                     actions.push({
                         attachId: action.attachId,
                         id: action._id,
+                        userId: action.userId,
                         createdAt: action.createdAt.toLocaleString(),
                         subTask,
                         action: 'Continue',
@@ -104,9 +157,11 @@ class Results extends Component{
                     actions.push({
                         attachId: action.attachId,
                         id: action._id,
+                        userId: action.userId,
                         createdAt: action.createdAt.toLocaleString(),
                         action: 'End',
                     })
+                    this.state.ongoing = false;
             }
         }
         this.forceUpdate();
@@ -126,9 +181,10 @@ class Results extends Component{
             let actionRows = [];
             for(let action of this.state.actions){
                 actionRows.push(
-                    <ResultRow action={action} key={action.id}/>
+                    <ResultRow action={action} key={action.id} ongoing={this.state.ongoing}/>
                 )
             }
+
             return(
                 <div className="results">
                     <legend>Results for {this.props.user.profile.firstName} {this.props.user.profile.lastName} in {this.props.task.name}</legend>
@@ -137,6 +193,7 @@ class Results extends Component{
                             <tr>
                                 <th>Created At</th>
                                 <th>Step Name</th>
+                                <th>By</th>
                                 <th>Action</th>
                                 <th>Result</th>
                                 <th>Message</th>

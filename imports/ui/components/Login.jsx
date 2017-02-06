@@ -91,7 +91,7 @@ export class LoginDropdown extends Component {
                     {captionText} <i className="fa fa-caret-down"/>
                 </a>
 
-                <ul className="dropdown-menu">
+                <ul id='login' className="dropdown-menu">
                     {template}
                 </ul>
             </li>

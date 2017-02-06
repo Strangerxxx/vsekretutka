@@ -27,7 +27,7 @@
     margin-bottom: 10px;
 }
 
-.dropdown-menu{
+.dropdown-menu#login{
     width: 400px !important;
 }
 span.remove-notification{

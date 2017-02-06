@@ -112,9 +112,9 @@ if(Meteor.isServer) {
                     mainTaskId,
                     userId,
                     subTaskId,
-                    message,
                     attachId,
                     resultId,
+                    message,
                 },
             })
         }
