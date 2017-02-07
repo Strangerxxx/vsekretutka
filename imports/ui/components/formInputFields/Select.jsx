@@ -6,6 +6,7 @@ export default class Select extends Component{
         this.selectHandler = this.selectHandler.bind(this);
         this.state= {
             name,
+            value: props.value,
         };
     }
 
@@ -15,6 +16,8 @@ export default class Select extends Component{
 
     selectHandler(event){
         let select = event.target;
+
+
         if(this.props.callback){
             this.props.callback(this.props.name, event.target.value);
         }
@@ -22,21 +25,20 @@ export default class Select extends Component{
             this.props.selectCallback(select.options[select.selectedIndex].value);
             select.selectedIndex=0;
         }
+        this.setState(this.state.value = event.target.value);
     }
 
     render() {
         let props = this.props;
-        let className = "table-cell-select form-control";
         if(props.index != undefined)
             this.state.name = props.prefix + '.' + props.index + '.' + props.name;
         else
             this.state.name = props.name;
-        if(props.className)
-            className = this.props.className;
+
         return(
-            <div name={this.state.name}>
-                {props.schema ? <label className="control-label" htmlFor={props.id}> { props.schema[props.name].label } </label> : ''}
-                <select className={className} id={props.id} value={props.value} name={this.state.name} onChange={this.selectHandler}>
+            <div>
+                {props.schema ? <label className="control-label"> { schema.label } </label> : ''}
+                <select className="table-cell-select form-control" value={props.value} name={this.state.name} onChange={this.selectHandler}>
                     {this.createOptions()}
                 </select>
             </div>

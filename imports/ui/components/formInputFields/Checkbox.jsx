@@ -28,8 +28,8 @@ export default class Checkbox extends Component{
         else
             this.state.name = props.name;
         return(
-            <div className='checkbox' id={props.id} name={this.state.name}>
-                <label><input name={this.state.name} id={props.id} type="checkbox" value='true' checked={this.state.checked} onChange={this.changeValue}/>{ props.schema[props.name].label }</label>
+            <div className='checkbox'>
+                <label><input name={this.state.name} type="checkbox" value='true' checked={this.state.checked} onChange={this.changeValue}/>{ props.schema.label }</label>
             </div>
         )
     }

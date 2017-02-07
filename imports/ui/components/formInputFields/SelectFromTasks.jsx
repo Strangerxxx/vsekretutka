@@ -2,7 +2,6 @@ import React, { Component, PropTypes} from 'react';
 import Select from './Select';
 
 export default class SelectFromTasks extends Select{
-
     createOptions() {
         let options = [];
         if(this.props.tasks.length == 0)

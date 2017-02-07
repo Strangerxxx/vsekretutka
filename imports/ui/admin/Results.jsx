@@ -219,8 +219,9 @@ class Results extends Component{
 
             return(
                 <div className="results">
-                    <a className="btn btn-default" href={"/admin/tasks/" + this.props.task._id}><i className="fa fa-arrow-left"/>  Back to Task</a>
                     <legend>Results for {this.props.user.profile.firstName} {this.props.user.profile.lastName} in {this.props.task.name}</legend>
+                    <a className="btn btn-default" href={"/admin/tasks/" + this.props.task._id}><i className="fa fa-arrow-left"/>  Back to Task</a>
+                    <hr/>
                     <table className="table result-table">
                         <thead>
                             <tr>

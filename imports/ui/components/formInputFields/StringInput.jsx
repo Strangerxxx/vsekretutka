@@ -5,26 +5,23 @@ export default class StringInput extends Component {
         super(props);
         this.changeValue = this.changeValue.bind(this);
         this.state= {
-            name,
+            value: props.value ? props.value: '',
         };
     }
 
     changeValue(event){
+        this.state.value = event.target.value;
         if(this.props.callback)
             this.props.callback(this.props.name, event.target.value);
+        this.forceUpdate();
     }
 
     render() {
         let props = this.props;
-        if(props.index != undefined)
-            this.state.name = props.prefix + '.' + props.index + '.' + props.name;
-        else
-            this.state.name = props.name;
-
         return(
-            <div className={this.state.class} id={props.id} name={this.state.name}>
-                <label className="control-label" htmlFor={props.id}> { props.schema[props.name].label } </label>
-                <input className="form-control" name={this.state.name} id={props.id} type="text" value={props.value} onChange={this.changeValue}/>
+            <div className={this.state.class}>
+                <label className="control-label"> {props.schema.label} </label>
+                <input className="form-control" name={this.props.name} type="text" value={this.state.value} onChange={this.changeValue}/>
             </div>
         )
     }

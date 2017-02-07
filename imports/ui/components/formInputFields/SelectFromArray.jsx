@@ -10,7 +10,7 @@ export default class SelectFromArray extends Select{
         else {
             options.push(<option key="empty" value={0}>Select an item</option>);
             for(let option of this.props.array){
-                options.push(<option key={Random.id()} value={option}>{option}</option>)
+                options.push(<option key={option} value={option}>{option}</option>)
             }
         }
         return options;
