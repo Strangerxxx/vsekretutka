@@ -1,6 +1,6 @@
 import React, { Component, PropTypes} from 'react';
 import Tasks from '/imports/api/tasks/tasks';
-import {StringInput, TextAreaInput, SelectFromTasks, SelectFromArray, Checkbox} from '/imports/ui/components/formInputFields';
+import FormInputFields from '/imports/ui/components/formInputFields';
 import CompletionTypes from '/imports/ui/components/completionTypes';
 import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
@@ -14,7 +14,7 @@ export class MainTaskForm extends Component{
                 {this.props.error ? <div className="alert alert-danger alert-dismissable">
                         {this.props.error}
                     </div> : ''}
-                <StringInput schema={schema} id={id} value={this.props.value['name']} name="name" />
+                <FormInputFields.StringInput.component schema={schema} id={id} value={this.props.value['name']} name="name" />
                 <TextAreaInput schema={schema} id={id} value={this.props.value['description']} name="description"/>
             </div>
         )
