@@ -5,11 +5,11 @@ export default Invites = new Meteor.Collection('invites');
 
 Invites.allow({
     insert: function (userId) {
-        if(Roles.userIsInRole(userId, 'admin'))
+        if(Roles.userHasRole(userId, 'admin'))
             return !!userId;
     },
     remove: function (userId) {
-        if(Roles.userIsInRole(userId, 'admin'))
+        if(Roles.userHasRole(userId, 'admin'))
             return !!userId;
     },
     update: function (userId) {
@@ -20,11 +20,11 @@ Invites.allow({
 if(Meteor.isServer){
     Meteor.methods({
         'invites.create'(userId){
-            if (Roles.userIsInRole(userId, 'admin'))
+            if (Roles.userHasRole(userId, 'admin'))
                 Invites.insert({});
         },
         'invites.delete'(userId, token){
-            if(Roles.userIsInRole(userId, 'admin'))
+            if(Roles.userHasRole(userId, 'admin'))
                 Invites.remove({_id: token});
         },
         'invites.set-visited'(token){
@@ -38,7 +38,7 @@ if(Meteor.isServer){
     Meteor.publish('invites', function (token) {
         if(this.userId == null)
             return Invites.find(token);
-        else if(Roles.userIsInRole(this.userId, 'admin'))
+        else if(Roles.userHasRole(this.userId, 'admin'))
             return Invites.find();
     });
 }

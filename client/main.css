@@ -101,3 +101,14 @@ img.fit-in-div{
     max-height: 100%;
     max-width: 100%;
 }
+
+table.result-table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+td.text-overflow{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

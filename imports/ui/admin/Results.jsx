@@ -80,40 +80,45 @@ class ResultRow extends Component{
                 <button onClick={this.buttonReturn} key={Random.id()} className='btn btn-danger'><i className="fa fa-step-backward"/></button>
             )
         }
-
-        if(result && result.type == 'File'){
-            let fileObj = Files.findOne(result.value);
-            if(fileObj)
-            {
-                let type = fileObj.original.type.split('/');
-                if(type[0] == 'image')
+        if(result){
+            if(result.type == 'File'){
+                let fileObj = Files.findOne(result.value);
+                if(fileObj)
                 {
-                    result.value = (
-                        <span>
-                            <a
-                                href="#"
-                                onClick={() => bootbox.alert({
-                                    title: fileObj.original.name,
-                                    size: 'large',
-                                    message: "<a href=" + fileObj.url() + "><img class='fit-in-div' src=" + fileObj.url() + "/></a>",
-                                })}
-                            >Image</a>
-                        </span>
-                    );
+                    let type = fileObj.original.type.split('/');
+                    if(type[0] == 'image')
+                    {
+                        result.value = (
+                            <span>
+                                <a
+                                    href="#"
+                                    onClick={() => bootbox.alert({
+                                        title: fileObj.original.name,
+                                        size: 'large',
+                                        message: "<a href=" + fileObj.url() + "><img class='fit-in-div' src=" + fileObj.url() + "/></a>",
+                                    })}
+                                >Image</a>
+                            </span>
+                        );
+                    }
+                    else
+                        result.value = (<a href={fileObj.url()}>File</a>);
                 }
-                else
-                    result.value = (<a href={fileObj.url()}>File</a>);
+            }
+            else if(result.type == 'Button'){
+                result.value = (<i className="fa fa-check"/>)
             }
         }
+
         return(
             <tr className={action.returned ? 'danger' : action.checked == null ? null : action.checked ? 'success' : 'warning'}>
                 <td className="created-at">{action.createdAt}</td>
                 <td>{action.subTask ? action.subTask.name : '-'}</td>
-                <td>{user.profile.firstName + ' ' + user.profile.lastName} {Roles.userIsInRole(action.userId, 'admin') ? '(admin)' : null}</td>
+                <td>{user.profile.firstName + ' ' + user.profile.lastName} {Roles.userHasRole(action.userId, 'admin') ? '(admin)' : null}</td>
                 <td>{action.action}</td>
                 <td>{(result = action.result) ? result.type : '-'}</td>
                 <td>{(result = action.result) ? result.value : '-'}</td>
-                <td>{action.message}</td>
+                <td className="text-overflow">{action.message}</td>
                 <td><div className="btn-group">{buttons}</div></td>
             </tr>
         )
@@ -214,8 +219,9 @@ class Results extends Component{
 
             return(
                 <div className="results">
+                    <a className="btn btn-default" href={"/admin/tasks/" + this.props.task._id}><i className="fa fa-arrow-left"/>  Back to Task</a>
                     <legend>Results for {this.props.user.profile.firstName} {this.props.user.profile.lastName} in {this.props.task.name}</legend>
-                    <table className="table">
+                    <table className="table result-table">
                         <thead>
                             <tr>
                                 <th>Created At</th>

@@ -8,7 +8,7 @@ if(Meteor.isServer){
     Files.allow({
         'insert': (userId) => !!userId,
         download: (userId) => {
-            if(Roles.userIsInRole(userId, 'admin'))
+            if(Roles.userHasRole(userId, 'admin'))
                 return !!userId;
         },
         update: (userId) => !!userId,

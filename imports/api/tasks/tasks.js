@@ -10,7 +10,7 @@ if(Meteor.isServer){
     Meteor.publish('tasks', (userId) => {
         if(userId == null)
             return null;
-        else if(Roles.userIsInRole(userId, 'admin'))
+        else if(Roles.userHasRole(userId, 'admin'))
             return Tasks.find();
         else{
             return Tasks.find({_id: {

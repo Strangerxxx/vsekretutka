@@ -181,6 +181,6 @@ export default createContainer(({params}) => {
         task,
         subtasks,
         ready: tasksHandle.ready() && usersHandle.ready() && actionsHandle.ready(),
-        users: Meteor.users.find().fetch().filter((user) => !Roles.userIsInRole(user._id, 'admin')),
+        users: Meteor.users.find().fetch().filter((user) => !Roles.userHasRole(user._id, 'admin')),
     }
 }, TaskView)

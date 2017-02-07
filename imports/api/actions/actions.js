@@ -26,13 +26,13 @@ if(Meteor.isServer) {
             return Actions.find({$or : [ {userId: userId}, {'data.userId': userId} ] });
     });
     Meteor.publish('actions.admin', (userId) => {
-        if(Roles.userIsInRole(userId, 'admin'))
+        if(Roles.userHasRole(userId, 'admin'))
             return Actions.find({ $or : [ {userId: userId}, {'data.adminUserId': userId} ] });
     });
 
     Meteor.methods({
         'actions.attach': (userId, adminUserId, mainTaskId) => {
-            if(Roles.userIsInRole(adminUserId, 'admin')){
+            if(Roles.userHasRole(adminUserId, 'admin')){
                  if(!Actions.userIsAttachedByAdmin(userId, mainTaskId, adminUserId))
                     Actions.insert({
                         userId: adminUserId,
@@ -80,7 +80,7 @@ if(Meteor.isServer) {
         },
         'actions.deattach': (userId, adminUserId, mainTaskId) => {
             let attachId;
-            if(Roles.userIsInRole(adminUserId, 'admin'))
+            if(Roles.userHasRole(adminUserId, 'admin'))
                 if(attachId = Actions.userIsAttachedByAdmin(userId, mainTaskId, adminUserId))
                     if(Actions.find({'data.attachId' : attachId, type: {$ne: 'attach'}}).fetch().length != 0)
                         Actions.insert({

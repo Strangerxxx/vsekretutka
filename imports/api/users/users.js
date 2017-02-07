@@ -6,7 +6,7 @@ Schema = {};
 
 Meteor.users.allow({
     update: (userId) => {
-        if(Roles.userIsInRole(userId , 'admin'))
+        if(Roles.userHasRole(userId , 'admin'))
             return !!userId;
     }
 });
@@ -141,17 +141,17 @@ Meteor.users.attachSchema(Schema.User);
 if(Meteor.isServer){
     Meteor.publish("users", function (userId) {
         let query;
-        if(Roles.userIsInRole(userId, 'root'))
+        if(Roles.userHasRole(userId, 'root'))
             query = {};
-        else if(Roles.userIsInRole(userId, 'admin'))
+        else if(Roles.userHasRole(userId, 'admin'))
             query = {roles: {$nin: ['admin']}};
         else
             query = {_id: userId};
         return Meteor.users.find(query, {fields: {emails: 1, profile: 1, createdAt: 1, roles: 1}});
     });
 
-    Meteor.publish("currentUser", function () {
-       return Meteor.users.find(this.userId);
+    Meteor.publish("currentUser", function (userId) {
+       return Meteor.users.find(userId);
     });
 
     Meteor.methods({
@@ -182,7 +182,7 @@ if(Meteor.isServer){
             return stampedLoginToken.token;
         },
         'users.delete': function (userId) {
-            if(Roles.userIsInRole(this.userId, 'admin') && this.userId != userId)
+            if(Roles.userHasRole(this.userId, 'admin') && this.userId != userId)
                 Meteor.users.remove({_id: userId});
         }
     });

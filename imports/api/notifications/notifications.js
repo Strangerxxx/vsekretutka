@@ -14,19 +14,27 @@ Notifications.allow({
         return !!userId;
     },
     remove: function (userId) {
-        if(Roles.userIsInRole(userId, 'admin'))
+        if(Roles.userHasRole(userId, 'admin'))
             return !!userId;
     },
     update: function (userId) {
-        if(Roles.userIsInRole(userId, 'admin'))
+        if(Roles.userHasRole(userId, 'admin'))
             return !!userId;
     }
 });
 
-NotificationsSchema = new SimpleSchema({
-    text: {
+AffectedSchema = new SimpleSchema({
+    id: {
         type: String,
     },
+    seen: {
+        type: Array,
+    },
+    'seen.$': Meteor.users,
+
+});
+
+NotificationsSchema = new SimpleSchema({
     seen: {
         type: Boolean,
         autoValue: function () {
@@ -45,15 +53,14 @@ NotificationsSchema = new SimpleSchema({
         type: String,
         optional: true,
     },
-    userId: {
-        type: String,
-        optional: true,
+    affected: {
+        type: Array,
     },
-    role: {
+    'affected.$': {
         type: String,
-        optional: true,
-    }
+    },
 });
+
 
 if(Meteor.isServer){
     Meteor.methods({

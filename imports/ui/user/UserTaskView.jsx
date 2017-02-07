@@ -95,18 +95,19 @@ class UserTaskView extends Component{
 
         for(let subTask of props.subTasks){
             let actions = Actions.find({'data.subTaskId': subTask._id, 'data.attachId': props.attachId}).fetch();
+            let lastAction = actions[actions.length-1];
             if(this.state.checked == false)
                 this.state.checked = true;
             if(actions.length == 0){
                 activeStep = subTask;
                 break;
             }
-            else if(actions[actions.length-1].type == 'return')
+            else if(lastAction.type == 'return')
             {
                 activeStep = subTask;
                 break;
             }
-            else if(subTask.notify == 'true' && actions[actions.length-1].type == 'result'){
+            else if(subTask.notify == 'true' && lastAction.type == 'result'){
                 activeStep = subTask;
                 this.state.checked = false;
                 break;

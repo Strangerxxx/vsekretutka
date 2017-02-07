@@ -9,7 +9,7 @@ class UserTaskList extends Component{
         let attachActions = Actions.find({_id: {$in: this.props.attachIds}}).fetch();
         for(let attach of attachActions){
             let task = Tasks.findOne(attach.data.mainTaskId);
-            options.push(<li key={task._id}><a href={"tasks/" + task._id + '/' + attach._id}>{task.name}</a></li>);
+            options.push(<li key={task._id}><a href={"/tasks/" + task._id + '/' + attach._id}>{task.name}</a></li>);
         }
         return options;
     }
