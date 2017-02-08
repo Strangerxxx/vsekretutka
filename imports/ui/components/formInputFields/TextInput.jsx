@@ -2,7 +2,7 @@ import React, { Component, PropTypes} from 'react';
 
 export default TextInput = {
     label: 'String Input',
-    component: class Text extends Component {
+    component: class extends Component {
         constructor(props){
             super(props);
             this.changeValue = this.changeValue.bind(this);
@@ -19,10 +19,9 @@ export default TextInput = {
         }
 
         render() {
-            let props = this.props;
             return(
                 <div className={this.state.class}>
-                    <label className="control-label"> {props.schema.label} </label>
+                    <label className="control-label"> {this.props.label} </label>
                     <input className="form-control" name={this.props.name} type="text" value={this.state.value} onChange={this.changeValue}/>
                 </div>
             )
