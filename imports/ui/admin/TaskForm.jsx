@@ -14,8 +14,8 @@ export class MainTaskForm extends Component{
                 {this.props.error ? <div className="alert alert-danger alert-dismissable">
                         {this.props.error}
                     </div> : ''}
-                <FormInputFields.StringInput.component schema={schema} id={id} value={this.props.value['name']} name="name" />
-                <TextAreaInput schema={schema} id={id} value={this.props.value['description']} name="description"/>
+                <FormInputFields.TextInput.component label={schema.name.label} id={id} value={this.props.value['name']} name="name" />
+                <FormInputFields.TextAreaInput.component label={schema.description.label} id={id} value={this.props.value['description']} name="description"/>
             </div>
         )
     }
@@ -26,10 +26,10 @@ export class SimpleTaskForm extends Component{
         let schema = Tasks.schema._schema;
         return(
             <div className="simpleTask">
-                <StringInput schema={schema.name} value={this.props.value['name']} name={this.props.prefix + '.' + this.props.index + '.name'}/>
-                <SelectFromArray array={CompletionTypes.map((item) => item.label)} schema={schema.type} value={this.props.value['type']} name={this.props.prefix + "." + this.props.index + ".type"}/>
-                <TextAreaInput schema={schema.description} value={this.props.value['description']} name={this.props.prefix + '.' + this.props.index + '.description'}/>
-                <Checkbox schema={schema.notify} value={this.props.value['notify']} name={this.props.prefix + '.' + this.props.index + '.notify'} />
+                <FormInputFields.TextInput.component label={schema.name.label} value={this.props.value['name']} name={this.props.prefix + '.' + this.props.index + '.name'}/>
+                <FormInputFields.SelectFromArray  array={CompletionTypes.map((item) => item.label)} label={schema.type.label} value={this.props.value['type']} name={this.props.prefix + "." + this.props.index + ".type"}/>
+                <FormInputFields.TextAreaInput.component label={schema.description.label} value={this.props.value['description']} name={this.props.prefix + '.' + this.props.index + '.description'}/>
+                <FormInputFields.CheckboxInput.component label={schema.notify.label} value={this.props.value['notify']} name={this.props.prefix + '.' + this.props.index + '.notify'} />
             </div>
         )
     }
@@ -323,7 +323,7 @@ export default class TaskForm extends Component{
                                     <div>
                                         <button type="button" className="btn btn-primary table-cell-plus" onClick={this.newSubTaskButtonHandler}><i className="fa fa-plus"/></button>
                                         <div className="table-cell-select">
-                                            <SelectFromTasks tasks={this.filterTasks()} id={Random.id()} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
+                                            <FormInputFields.SelectFromTasks tasks={this.filterTasks()} id={Random.id()} name="selectSubTasks" value={0} selectCallback={this.changeSelectHandler}/>
                                         </div>
                                     </div>
                                 </li>

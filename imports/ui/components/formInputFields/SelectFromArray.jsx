@@ -1,7 +1,7 @@
 import React, { Component, PropTypes} from 'react';
-import Select from './Select';
+import SelectInput from './SelectInput';
 
-export default class SelectFromArray extends Select{
+export default class SelectFromArray extends SelectInput.component{
 
     createOptions(){
         let options = [];

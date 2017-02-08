@@ -1,7 +1,7 @@
 import React, { Component, PropTypes} from 'react';
-import Select from './Select';
+import SelectInput from './SelectInput';
 
-export default class SelectFromUsers extends Select{
+export default class SelectFromUsers extends SelectInput.component{
     constructor(props) {
         super(props);
         this.selectHandler = this.selectHandler.bind(this);

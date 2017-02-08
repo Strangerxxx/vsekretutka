@@ -1,7 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 
 export default TextInput = {
-    label: 'String Input',
+    label: 'Text Input',
     component: class extends Component {
         constructor(props){
             super(props);

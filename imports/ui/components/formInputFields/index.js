@@ -4,7 +4,7 @@ import TextAreaInput from './TextAreaInput';
 import SelectFromTasks from './SelectFromTasks';
 import SelectFromArray from './SelectFromArray';
 import SelectFromUsers from './SelectFromUsers';
-import Checkbox from './Checkbox';
+import CheckboxInput from './CheckboxInput';
 
 export default FormInputFields = {
     AutoForm,
@@ -13,5 +13,5 @@ export default FormInputFields = {
     SelectFromTasks,
     SelectFromArray,
     SelectFromUsers,
-    Checkbox,
+    CheckboxInput,
 };

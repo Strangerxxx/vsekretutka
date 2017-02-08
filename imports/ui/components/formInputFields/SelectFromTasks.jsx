@@ -1,7 +1,7 @@
 import React, { Component, PropTypes} from 'react';
-import Select from './Select';
+import SelectInput from './SelectInput';
 
-export default class SelectFromTasks extends Select{
+export default class SelectFromTasks extends SelectInput.component{
     createOptions() {
         let options = [];
         if(this.props.tasks.length == 0)
