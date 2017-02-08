@@ -1,22 +1,22 @@
 import React, { Component, PropTypes} from 'react';
 import { Meteor } from 'meteor/meteor';
-import FormInputFields from '../components/formInputFields'
-export default class TestAutoForm extends Component{
+import AutoForm from '../components/formInputFields/AutoForm'
+import Fields from '/imports/api/fields/fields';
+import { createContainer } from 'meteor/react-meteor-data';
+class TestAutoForm extends Component{
     render(){
-        let schema = {
-            name: {
-                label: 'Name',
-                type: FormInputFields.TextInput
-            },
-            value: {
-                label: 'Value',
-                type: FormInputFields.TextInput
-            },
-        };
-        return(
-            <div>
-                <FormInputFields.AutoForm schema={schema} />
-            </div>
-        )
+        if(this.props.ready) {
+            let schema = Fields.findOne('fnrZtnhMTec2PGCmf').getSchema();
+
+            return (
+                <div>
+                    <AutoForm schema={schema}/>
+                </div>
+            )
+        } else return (<span>Loading...</span>);
     }
 }
+export default createContainer(()=>{
+    let fieldHandle = Meteor.subscribe('fields');
+    return {ready: fieldHandle.ready()}
+}, TestAutoForm);
