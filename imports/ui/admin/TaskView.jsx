@@ -1,7 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-import { SelectFromUsers } from '/imports/ui/components/formInputFields';
+import FormInputFields from '/imports/ui/components/formInputFields';
 import Actions from '/imports/api/actions/actions';
 
 class SimpleTaskView extends Component{
@@ -122,7 +122,7 @@ class TaskView extends Component{
                     <hr/>
                     <div className="users-attach-form">
                         <form onSubmit={this.userAttach}>
-                            <SelectFromUsers selectCallback={this.userSelectCallback} users={this.props.users} value={this.state.selectValue} className="user-select" name="selectUser"/>
+                            <FormInputFields.SelectFromUsers selectCallback={this.userSelectCallback} users={this.props.users} value={this.state.selectValue} className="user-select" name="selectUser"/>
                             <button type="Submit" className="btn btn-default">Attach</button>
                         </form>
                     </div>
