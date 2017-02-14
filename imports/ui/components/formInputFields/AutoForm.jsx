@@ -5,6 +5,7 @@ export default class AutoForm extends Component{
         this.state = {
             fields: []
         };
+        this.inputs = {};
         this.submitHandler = this.submitHandler.bind(this);
     }
     getFieldByName(form, name){
@@ -15,13 +16,12 @@ export default class AutoForm extends Component{
     }
     submitHandler(event){
         event.preventDefault();
-        let form = $(event.target).serializeArray();
-        let input;
         for(let key in this.props.schema){
             if(this.props.schema.hasOwnProperty(key)) {
-                input = this.getFieldByName(form, key);
-                if(!input && !this.props.schema[key].optional) console.log('error in '+key+' input');
-
+                if(this.inputs.hasOwnProperty(key)){
+                    if(!this.inputs[key].state.value) console.log('error in '+key+' input');
+                    if(!this.inputs[key].validate()) console.log('error in '+key+' input');
+                }
             }
         }
         this.props.onSuccess(form);
@@ -31,14 +31,14 @@ export default class AutoForm extends Component{
         for(let key in this.props.schema){
             if(this.props.schema.hasOwnProperty(key)){
                 input = this.props.schema[key];
-                this.state.fields.push(<input.type.component key={key} label={input.label} name={key} options={input.options}/>);
+                this.state.fields.push(<input.type.component ref={(input)=>{this.inputs[key] = input}} key={key} label={input.label} name={key} options={input.options}/>);
             }
         }
         return(
             <div className={this.props.class}>
                 <form onSubmit={this.submitHandler}>
                     {this.state.fields}
-                    <input type="submit"/>
+                    <input className="btn btn-primary" type="submit"/>
                 </form>
             </div>
         );

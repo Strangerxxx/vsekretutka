@@ -10,7 +10,10 @@ export default TextInput = {
                 value: props.value ? props.value: '',
             };
         }
-
+        validate(){ // stub
+            console.log(this.state.value);
+            return true;
+        }
         changeValue(event){
             this.state.value = event.target.value;
             if(this.props.callback)

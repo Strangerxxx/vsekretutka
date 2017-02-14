@@ -11,7 +11,10 @@ export default SelectInput = {
                 value: props.value,
             };
         }
-
+        validate(){ // stub
+            console.log(this.state.value);
+            return true;
+        }
         createOptions(){
             return null;
         }

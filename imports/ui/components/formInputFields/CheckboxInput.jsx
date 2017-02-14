@@ -12,7 +12,10 @@ export default CheckboxInput = {
                     checked: false,
                 };
             }
-
+            validate(){ // stub
+                console.log(this.state.value);
+                return true;
+            }
             componentDidMount()
             {
                 if (this.props.value)

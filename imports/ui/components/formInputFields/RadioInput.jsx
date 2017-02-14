@@ -11,7 +11,10 @@ export default RadioInput = {
                 value: props.value,
             };
         }
-
+        validate(){ // stub
+            console.log(this.state.value);
+            return true;
+        }
         createOptions(){
             let output = [];
             if(this.props.options)

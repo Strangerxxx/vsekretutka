@@ -10,7 +10,10 @@ export default TextAreaInput = {
             };
             this.changeValue = this.changeValue.bind(this);
         }
-
+        validate(){ // stub
+            console.log(this.state.value);
+            return true;
+        }
         changeValue(event){
             if(this.props.callback)
                 this.props.callback(this.props.name, event.target.value);
