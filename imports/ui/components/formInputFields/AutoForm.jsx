@@ -12,7 +12,7 @@ export default class AutoForm extends Component{
         for(let key in this.props.schema){
             if(this.props.schema.hasOwnProperty(key)){
                 input = this.props.schema[key];
-                this.state.fields.push(<input.type.component key={key} label={input.label} name={key} />);
+                this.state.fields.push(<input.type.component key={key} label={input.label} name={key} options={[{value: 'Male', label: 'Male'},{value: 'Female', label: 'Female'}]}/>);
             }
         }
         return(
