@@ -122,55 +122,6 @@ if(Meteor.isServer) {
     });
 }
 
-schema = new SimpleSchema({
-    createdAt: {
-        type: Date,
-        autoValue() {
-            return new Date();
-        },
-    },
-    userId : {
-        type: Meteor.users,
-    },
-    adminUserId: {
-        type: Meteor.users,
-    },
-    mainTaskId: {
-        type: Tasks,
-    },
-    type: {
-        type: String,
-        allowedValues: [
-            'attach',
-            'result',
-            'return',
-            'deattach',
-            'continue',
-        ]
-    },
-    message: {
-        type: String,
-        optional: true
-    },
-    subTaskId: {
-        type: Tasks,
-        optional: true,
-    },
-    result: {
-        type: Object,
-        optional: true,
-        blackbox: true
-    },
-    attachId: {
-        type: Actions,
-        optional: true,
-    },
-    resultId: {
-        type: Actions,
-        optional: true,
-    }
-});
-
 Actions.schema = new SimpleSchema({
     createdAt: {
         type: Date,

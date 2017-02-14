@@ -6,8 +6,7 @@ import { Tracker } from 'meteor/tracker';
 class UserIndex extends Component {
     componentWillMount(){
         Tracker.autorun(() => {
-            console.log(Meteor.userId())
-            if(this.props.ready && Roles.userHasRole(Meteor.userId(), 'admin')){
+            if(Roles.userHasRole(Meteor.userId(), 'admin')){
                 this.props.router.push('/admin');
             }
         });
@@ -27,8 +26,9 @@ class UserIndex extends Component {
 }
 
 export default createContainer(() => {
+    let userHandle = Meteor.subscribe("currentUser", Meteor.userId());
     return{
-        ready: Meteor.subscribe("currentUser", Meteor.userId()).ready(),
+        ready: userHandle.ready(),
         user: Meteor.userId(),
     }
 }, UserIndex);

@@ -5,6 +5,8 @@ import Actions from '/imports/api/actions/actions';
 
 class UserTaskList extends Component{
     createTaskList(){
+        if(!this.props.attachIds)
+            return null;
         let options = [];
         let attachActions = Actions.find({_id: {$in: this.props.attachIds}}).fetch();
         for(let attach of attachActions){
@@ -33,7 +35,7 @@ export default createContainer(() => {
     let actionsHandle = Meteor.subscribe('actions.user', Meteor.userId());
     let userHandle = Meteor.subscribe('users', Meteor.userId());
     let attachIds;
-    if(userHandle.ready())
+    if(userHandle.ready() && Meteor.userId())
         attachIds = Meteor.user().profile.attachIds;
     return {
         tasks: Tasks.find().fetch().filter((item) => item.type == 'main'),

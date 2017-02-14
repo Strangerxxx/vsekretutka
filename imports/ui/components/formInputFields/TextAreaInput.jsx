@@ -14,7 +14,8 @@ export default TextAreaInput = {
         changeValue(event){
             if(this.props.callback)
                 this.props.callback(this.props.name, event.target.value);
-            this.setState(() => this.state.value = event.target.value)
+            this.state.value = event.target.value;
+            this.setState(this.state);
         }
 
         render() {

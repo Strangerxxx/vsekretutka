@@ -27,7 +27,8 @@ export default SelectInput = {
                 this.props.selectCallback(select.options[select.selectedIndex].value);
                 select.selectedIndex=0;
             }
-            this.setState(this.state.value = event.target.value);
+            this.state.value = event.target.value;
+            this.setState(this.state);
         }
 
         render() {
