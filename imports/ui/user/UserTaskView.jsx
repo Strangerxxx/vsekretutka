@@ -9,12 +9,12 @@ class SimpleTaskView extends Component{
         super(props);
         this.completionCallback = this.completionCallback.bind(this);
         this.state = {
-            checked: null,
+            value: null,
         }
     }
 
     drawCompletionForm(){
-        if(this.props.checked == false)
+        if(this.props.value == false)
             return(<span className="text-primary">Result has been sent, please wait for approval.</span>);
         for(let type of CompletionTypes){
             if(type.label == this.props.task.type){
@@ -79,7 +79,7 @@ class UserTaskView extends Component{
         super(props);
         this.state = {
             activeStep: null,
-            checked: null,
+            value: null,
         }
     }
 
@@ -96,8 +96,8 @@ class UserTaskView extends Component{
         for(let subTask of props.subTasks){
             let actions = Actions.find({'data.subTaskId': subTask._id, 'data.attachId': props.attachId}).fetch();
             let lastAction = actions[actions.length-1];
-            if(this.state.checked == false)
-                this.state.checked = true;
+            if(this.state.value == false)
+                this.state.value = true;
             if(actions.length == 0){
                 activeStep = subTask;
                 break;
@@ -109,7 +109,7 @@ class UserTaskView extends Component{
             }
             else if(subTask.notify == 'true' && lastAction.type == 'result'){
                 activeStep = subTask;
-                this.state.checked = false;
+                this.state.value = false;
                 break;
             }
 
@@ -131,7 +131,7 @@ class UserTaskView extends Component{
                         <span>{this.props.task.description}</span>
                     </div>
                     <hr/>
-                    <SimpleTaskView task={this.state.activeStep} checked={this.state.checked} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>
+                    <SimpleTaskView task={this.state.activeStep} checked={this.state.value} mainTaskId={this.props.task._id} attachId={this.props.attachId}/>
                 </div>
             );
         }

@@ -9,7 +9,7 @@ export default CheckboxInput = {
                 this.changeValue = this.changeValue.bind(this);
                 this.state = {
                     name,
-                    checked: false,
+                    value: false,
                 };
             }
             validate(){ // stub
@@ -19,14 +19,14 @@ export default CheckboxInput = {
             componentDidMount()
             {
                 if (this.props.value)
-                    this.state.checked = true;
+                    this.state.value = true;
             }
 
             changeValue(event)
             {
                 if(this.props.callback)
                     this.props.callback(this.props.name, event.target.value);
-                this.state.checked = !this.state.checked;
+                this.state.value = !this.state.value;
                 this.forceUpdate();
             }
 
@@ -44,7 +44,7 @@ export default CheckboxInput = {
                                 name={this.state.name}
                                 type="checkbox"
                                 value='true'
-                                checked={this.state.checked}
+                                checked={this.state.value}
                                 onChange={this.changeValue}
                             />
                             { props.label }

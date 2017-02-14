@@ -6,8 +6,8 @@ import { createContainer } from 'meteor/react-meteor-data';
 import FormInputFields from '/imports/ui/components/formInputFields';
 
 class TestAutoForm extends Component{
-    onSuccess(form){
-        console.log(form);
+    onSuccess(doc){
+        console.log(doc);
     }
     render(){
         if(this.props.ready) {
@@ -21,6 +21,7 @@ class TestAutoForm extends Component{
                 checkbox: {
                     label: 'Checkbox',
                     type: FormInputFields.CheckboxInput,
+                    optional: true
                 },
                 text: {
                     label: 'Text',

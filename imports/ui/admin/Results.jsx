@@ -64,7 +64,7 @@ class ResultRow extends Component{
         let buttons = [], result = action.result;
         let user = Meteor.users.findOne(action.userId);
         if (action.action == 'Result' && this.props.ongoing){
-            if (action.checked != true && action.subTask.notify == 'true')
+            if (action.value != true && action.subTask.notify == 'true')
                 buttons.push(
                     <div key={Random.id()} className="btn-group dropup">
                         <button type="button" className="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -111,7 +111,7 @@ class ResultRow extends Component{
         }
 
         return(
-            <tr className={action.returned ? 'danger' : action.checked == null ? null : action.checked ? 'success' : 'warning'}>
+            <tr className={action.returned ? 'danger' : action.value == null ? null : action.value ? 'success' : 'warning'}>
                 <td className="created-at">{action.createdAt}</td>
                 <td>{action.subTask ? action.subTask.name : '-'}</td>
                 <td>{user.profile.firstName + ' ' + user.profile.lastName} {Roles.userHasRole(action.userId, 'admin') ? '(admin)' : null}</td>
@@ -157,7 +157,7 @@ class Results extends Component{
                         result: action.data.result,
                         subTask,
                         action: 'Result',
-                        checked: subTask.notify == 'true' ? false : null,
+                        value: subTask.notify == 'true' ? false : null,
                         returned: false,
                     });
                     break;
@@ -183,7 +183,7 @@ class Results extends Component{
                         action: 'Continue',
                         message: action.data.message,
                     });
-                    actions[this.getIndexById(action.data.resultId)].checked = true;
+                    actions[this.getIndexById(action.data.resultId)].value = true;
                     break;
                 case 'deattach':
                     actions.push({

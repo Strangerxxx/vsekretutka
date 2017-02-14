@@ -8,23 +8,18 @@ export default class AutoForm extends Component{
         this.inputs = {};
         this.submitHandler = this.submitHandler.bind(this);
     }
-    getFieldByName(form, name){
-        for(let input of form)
-            if(input.name == name) return input;
-        return false;
-
-    }
     submitHandler(event){
         event.preventDefault();
+        let doc = {};
         for(let key in this.props.schema){
             if(this.props.schema.hasOwnProperty(key)) {
                 if(this.inputs.hasOwnProperty(key)){
-                    if(!this.inputs[key].state.value) console.log('error in '+key+' input');
                     if(!this.inputs[key].validate()) console.log('error in '+key+' input');
+                    else doc[key] = this.inputs[key].state.value;
                 }
             }
         }
-        this.props.onSuccess(form);
+        this.props.onSuccess(doc);
     }
     render(){
         let input;
