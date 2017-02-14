@@ -19,7 +19,10 @@ Fields.schema = new SimpleSchema({
         type: Array,
         optional: true,
     },
-    'options.$' : String,
+    'options.$': {
+        type: Object,
+        blackbox: true
+    },
 });
 
 Fields.attachSchema(Fields.schema);

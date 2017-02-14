@@ -6,6 +6,9 @@ import { createContainer } from 'meteor/react-meteor-data';
 import FormInputFields from '/imports/ui/components/formInputFields';
 
 class TestAutoForm extends Component{
+    onSuccess(form){
+        console.log(form);
+    }
     render(){
         if(this.props.ready) {
             let schema = {
@@ -13,12 +16,13 @@ class TestAutoForm extends Component{
                     label: 'Test',
                     optional: true,
                     type: FormInputFields.RadioInput,
+                    options: [{value: 'female', label: 'Female'}, {value: 'male', label: 'Male'}]
                 }
             };
 
             return (
                 <div>
-                    <AutoForm schema={schema}/>
+                    <AutoForm schema={schema} onSuccess={this.onSuccess}/>
                 </div>
             )
         } else return (<span>Loading...</span>);

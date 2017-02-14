@@ -2,23 +2,43 @@ import React, { Component, PropTypes} from 'react';
 export default class AutoForm extends Component{
     constructor(props) {
         super(props);
-        console.log(props.schema);
         this.state = {
             fields: []
+        };
+        this.submitHandler = this.submitHandler.bind(this);
+    }
+    getFieldByName(form, name){
+        for(let input of form)
+            if(input.name == name) return input;
+        return false;
+
+    }
+    submitHandler(event){
+        event.preventDefault();
+        let form = $(event.target).serializeArray();
+        let input;
+        for(let key in this.props.schema){
+            if(this.props.schema.hasOwnProperty(key)) {
+                input = this.getFieldByName(form, key);
+                if(!input && !this.props.schema[key].optional) console.log('error in '+key+' input');
+
+            }
         }
+        this.props.onSuccess(form);
     }
     render(){
         let input;
         for(let key in this.props.schema){
             if(this.props.schema.hasOwnProperty(key)){
                 input = this.props.schema[key];
-                this.state.fields.push(<input.type.component key={key} label={input.label} name={key} options={[{value: 'Male', label: 'Male'},{value: 'Female', label: 'Female'}]}/>);
+                this.state.fields.push(<input.type.component key={key} label={input.label} name={key} options={input.options}/>);
             }
         }
         return(
             <div className={this.props.class}>
-                <form>
+                <form onSubmit={this.submitHandler}>
                     {this.state.fields}
+                    <input type="submit"/>
                 </form>
             </div>
         );
