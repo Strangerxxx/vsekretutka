@@ -13,11 +13,42 @@ class TestAutoForm extends Component{
         if(this.props.ready) {
             let schema = {
                 radio: {
-                    label: 'Test',
+                    label: 'Radio optional',
                     optional: true,
                     type: FormInputFields.RadioInput,
                     options: [{value: 'female', label: 'Female'}, {value: 'male', label: 'Male'}]
-                }
+                },
+                checkbox: {
+                    label: 'Checkbox',
+                    type: FormInputFields.CheckboxInput,
+                },
+                text: {
+                    label: 'Text',
+                    type: FormInputFields.TextInput,
+                },
+                textArea: {
+                    label: 'TextArea',
+                    type: FormInputFields.TextAreaInput,
+                },
+                select: {
+                    label: 'Select',
+                    type: FormInputFields.SelectFromArray,
+                    options: [
+                        {
+                            label: 'Ketchup',
+                            value: 'ketchup',
+                        },
+                        {
+                            label: 'Mustard',
+                            value: 'mustard',
+                        },
+                        {
+                            label: 'Мазик',
+                            value: 'mayonnaise',
+                        },
+                    ]
+                },
+
             };
 
             return (

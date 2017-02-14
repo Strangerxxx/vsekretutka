@@ -27,7 +27,7 @@ export class SimpleTaskForm extends Component{
         return(
             <div className="simpleTask">
                 <FormInputFields.TextInput.component label={schema.name.label} value={this.props.value['name']} name={this.props.prefix + '.' + this.props.index + '.name'}/>
-                <FormInputFields.SelectFromArray  array={CompletionTypes.map((item) => item.label)} label={schema.type.label} value={this.props.value['type']} name={this.props.prefix + "." + this.props.index + ".type"}/>
+                <FormInputFields.SelectFromArray.component  options={CompletionTypes.map((item) => obj = {label: item.label, value: item.label})} label={schema.type.label} value={this.props.value['type']} name={this.props.prefix + "." + this.props.index + ".type"}/>
                 <FormInputFields.TextAreaInput.component label={schema.description.label} value={this.props.value['description']} name={this.props.prefix + '.' + this.props.index + '.description'}/>
                 <FormInputFields.CheckboxInput.component label={schema.notify.label} value={this.props.value['notify']} name={this.props.prefix + '.' + this.props.index + '.notify'} />
             </div>
